@@ -1,0 +1,16 @@
+package routes
+
+import (
+	"github.com/fauzancodes/videoverse-api/app/controllers"
+	"github.com/fauzancodes/videoverse-api/app/middlewares"
+	"github.com/labstack/echo/v4"
+)
+
+func Route(app *echo.Echo) {
+	app.Static("/assets", "assets")
+	app.Static("/docs", "docs")
+
+	app.GET("/", controllers.Index, middlewares.StripHTMLMiddleware)
+	app.GET("/postman/collection", controllers.DownloadPostmanCollection, middlewares.StripHTMLMiddleware)
+	app.GET("/postman/environment", controllers.DownloadPostmanEnvironment, middlewares.StripHTMLMiddleware)
+}
