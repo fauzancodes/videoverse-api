@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoVerse API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ECECEC;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #006BFF;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        main {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        p {
+            line-height: 1.6;
+            color: #333;
+        }
+        em {
+            color: #555;
+        }
+        .feature-list {
+            text-align: left;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            max-width: 100%;
+            margin: 20px auto;
+            padding: 0;
+            list-style-type: disc;
+        }
+        .feature-list li {
+            margin-left: 20px;
+            color: #333;
+        }
+        @media screen and (min-width: 768px) {
+            .feature-list {
+                grid-template-columns: 1fr 1fr 1fr;
+                max-width: 90%;
+            }
+        }
+        .button-group {
+            margin: 30px 0;
+        }
+        a.button {
+            display: inline-block;
+            margin: 10px;
+            padding: 14px 24px;
+            font-size: 16px;
+            text-decoration: none;
+            background: #006BFF;
+            color: white;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        a.button:hover {
+            background: #004bb3;
+        }
+        section.note {
+            padding: 40px;
+        }
+        section.note code {
+            background-color: #E0E0E0;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        footer {
+            background-color: #E0E0E0;
+            color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>VideoVerse Documentation</h1>
+    </header>
+    <main>
+        <p>Welcome to the VideoVerse API documentation. This API is built using the <a href="https://go.dev/" target="_blank">Go</a> programming language with the <a href="https://gin-gonic.com/" target="_blank">Gin</a> framework, leveraging <a href="https://gorm.io/" target="_blank">GORM</a> as the ORM for database connections. <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a> is used as the main database, ensuring high performance and scalability. The API is designed to efficiently and securely support various data management features, including authentication, product management, sales, customers, and other functionalities to meet business needs.</p>
+        <p>Below are the features of the API:</p>
+        <ul class="feature-list">
+            <li><strong>Secure Authentication:</strong> Effortlessly manage user access with login, register, email verification and password recovery endpoints, powered by <a href="https://jwt.io/" target="_blank">JWT</a> authentication and industry-standard <a href="https://en.wikipedia.org/wiki/Bcrypt" target="_blank">bcrypt</a> hashing for a secure user experience.</li>
+            <li><strong>Dynamic Data Retrieval:</strong> All GET endpoints feature dynamic pagination, filtering, searching, and sorting options, making data retrieval intuitive and efficient.</li>
+            <li><strong>Robust Input Validation:</strong> Ensure data integrity with comprehensive validation on all POST endpoints, preventing errors and enhancing user experience.</li>
+            <li><strong>SQL Injection Prevention:</strong> All endpoints is protected with query parameter sanitization, guarding against SQL injection attacks for enhanced security.</li>
+            <li><strong>Secure One-Time API Key:</strong> Each request to the endpoints is protected with a single-use API key generated using <a href="https://en.wikipedia.org/wiki/HMAC" target="_blank">HMAC</a> and <a href="https://en.wikipedia.org/wiki/SHA-2" target="_blank">SHA-256</a> methods, ensuring robust security and integrity for every transaction while safeguarding your data from unauthorized access.</li>
+            <li><strong>Automatic Database Migration:</strong> Enjoy worry-free database management with automatic migration, ensuring your table structures and relationships stay perfectly in sync.</li>
+            <li><strong>Modular And Flexible Architecture Support:</strong> Crafted with modularity in mind, automating deployment, scaling, and management of containerized applications, easily managed through <a href="https://www.docker.com/" target="_blank">Docker</a> and <a href="https://kubernetes.io/" target="_blank">Kubernetes</a> for a streamlined deployment and maintenance experience.</li>
+            <li><strong>Comprehensive Documentation:</strong> Navigate through the API with ease using clear, organized <a href="https://www.postman.com/" target="_blank">Postman</a> documentation designed to simplify testing and ensuring a smooth development experience for all developers.</li>
+        </ul>
+        <div class="button-group">
+            <a href="/postman/collection" download="Sale Demo API.postman_collection.json" class="button">Download Postman Collection</a>
+            <a href="/postman/environment" download="Sales Demo API.postman_environment.json" class="button">Download Postman Environment</a>
+            <a href="https://github.com/fauzancodes/sales-demo-api" class="button" target="_blank">Go to GitHub Repository</a>
+        </div>
+    </main>
+    <section class="note">
+        <strong>Additional Note:</strong> 
+        <ul>
+            <li>
+                For frontend developers who want to connect to this API: You can use <code>SPECIAL_API_KEY (Uh/UB%SKft3CU3e0zJAvBhp3cyo/un2021/zLQf1BKGZZuQ6w5P9VAM6Sj0CcQCm)</code>, put it directly in the http request header as <code>X-Api-Key</code>. Or, if you want to try the One-Time API Key feature, the way to create the X-Api-Key is to generate a random string, then calculate the HMAC signature between the random string and the <code>HMAC_KEY (dI62Fk_8wb2uL8CLmSLFkDoAO/tfDeod)</code> with the SHA-256 algorithm, the result of the HMAC calculation is combined with the random string with the pattern "random_string:hmac_result", then encode the pattern with the Base64 algorithm, the endcode result is the <code> X-Api-Key</code>
+            </li>
+            <li>
+                For backend developers who want to learn the coding of this project, if you don't want to use the API key feature, don't forget to set <code>SPECIAL_API_KEY</code> in .env to the request header as <code>X-Api-Key</code> or change <code>ENABLE_API_KEY</code> in .env to false or you will not be able to access all endpoints at all. And don't forget to create a <a href="https://cloudinary.com/" target="_blank">Cloudinary</a> account for image upload needs, a <a href="https://www.backblaze.com/" target="_blank">Backblaze</a> account for file system needs, and set up <a href="https://www.digitalocean.com/community/tutorials/how-to-use-google-s-smtp-server" target="_blank">gmail smtp</a> for sending emails.
+            </li>
+        </ul>
+    </section>
+    <footer>
+        <p>&copy; 2024 VideoVerse API Project. All rights reserved. By <a href="https://fauzancodes.id/" target="_blank">fauzancodes</a></p>
+    </footer>
+</body>
+</html>

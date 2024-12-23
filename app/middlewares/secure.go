@@ -14,29 +14,33 @@ import (
 	"github.com/fauzancodes/videoverse-api/app/config"
 	"github.com/fauzancodes/videoverse-api/app/dto"
 	"github.com/fauzancodes/videoverse-api/app/models"
+	"github.com/gin-contrib/secure"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	strip "github.com/grokify/html-strip-tags-go"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 // Secure Middleware
-func Secure() echo.MiddlewareFunc {
-	return middleware.SecureWithConfig(middleware.SecureConfig{
-		XSSProtection:         "1; mode=block",
-		ContentTypeNosniff:    "nosniff",
-		XFrameOptions:         "SAMEORIGIN",
-		HSTSMaxAge:            0,
-		ContentSecurityPolicy: "",
-		Skipper: func(c echo.Context) bool {
-			return strings.Contains(c.Path(), "/docs")
-		},
+func Secure() gin.HandlerFunc {
+	return secure.New(secure.Config{
+		// SSLRedirect:   false,
+		IsDevelopment: false,
+		// STSSeconds:            315360000,
+		// STSIncludeSubdomains:  true,
+		// STSPreload:            true,
+		FrameDeny:          true,
+		ContentTypeNosniff: true,
+		BrowserXssFilter:   true,
+		// ContentSecurityPolicy: "default-src 'self'",
+		IENoOpen: true,
+		// SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
 	})
 }
 
-func StripHTMLMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		for key, values := range c.QueryParams() {
+func StripHTMLMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		queryParams := c.Request.URL.Query()
+		for key, values := range queryParams {
 			for i, value := range values {
 				sanitizedValue := template.HTMLEscapeString(value)
 				sanitizedValue = strings.ReplaceAll(sanitizedValue, "=", "")
@@ -53,80 +57,88 @@ func StripHTMLMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				sanitizedValue = strings.ReplaceAll(sanitizedValue, "&#39;", "")
 				values[i] = strip.StripTags(sanitizedValue)
 			}
-			c.QueryParams()[key] = values
+			queryParams[key] = values
 		}
-
-		return next(c)
+		c.Request.URL.RawQuery = queryParams.Encode()
+		c.Next()
 	}
 }
 
-func CheckAPIKey(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		if config.LoadConfig().EnableAPIKey {
-			apiKey := c.Request().Header.Get("X-API-KEY")
-			if apiKey == "" {
-				fmt.Println("Failed to check api key: no api key in header")
-				return c.JSON(http.StatusForbidden, dto.Response{
-					Status:  http.StatusForbidden,
-					Message: "Forbidden",
-				})
-			}
-			if apiKey == config.LoadConfig().SpecialApiKey {
-				return next(c)
-			}
+func CheckAPIKey() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		conf := config.LoadConfig()
 
-			secretKey, receivedHMAC, err := DecodeAPIKeyBase64(apiKey)
-			if err != nil {
-				fmt.Println("Failed to check api key: ", err.Error())
-				return c.JSON(http.StatusForbidden, dto.Response{
-					Status:  http.StatusForbidden,
-					Message: "Forbidden",
-				})
-			}
-
-			secret := config.LoadConfig().HMACKey
-
-			hmacVerified, expectedHMAC, err := VerifyAPIKeyHMAC(secretKey, receivedHMAC, secret)
-			if err != nil {
-				fmt.Println("Failed to check api key: ", err.Error())
-				return c.JSON(http.StatusForbidden, dto.Response{
-					Status:  http.StatusForbidden,
-					Message: "Forbidden",
-				})
-			}
-			var usedApiKey models.VAUsedApiKey
-			err = config.DB.Debug().Where("secret_key = ?", secretKey).First(&usedApiKey).Error
-			if err != nil {
-				fmt.Println("Check api key:", err.Error())
-			}
-			if usedApiKey.ID != uuid.Nil {
-				fmt.Println("Failed to check api key: api key already used")
-				return c.JSON(http.StatusForbidden, dto.Response{
-					Status:  http.StatusForbidden,
-					Message: "Forbidden",
-				})
-			}
-
-			err = config.DB.Create(&models.VAUsedApiKey{
-				SecretKey:    secretKey,
-				Base64Key:    apiKey,
-				ReceivedHMAC: receivedHMAC,
-				ExpectedHMAC: expectedHMAC,
-			}).Error
-			if err != nil {
-				fmt.Println("Failed to save api key: ", err.Error())
-			}
-
-			if !hmacVerified {
-				fmt.Println("Failed to check api key: failed to verify hmac")
-				return c.JSON(http.StatusForbidden, dto.Response{
-					Status:  http.StatusForbidden,
-					Message: "Forbidden",
-				})
-			}
+		if !conf.EnableAPIKey {
+			c.Next()
+			return
 		}
 
-		return next(c)
+		apiKey := c.GetHeader("X-API-KEY")
+		if apiKey == "" {
+			fmt.Println("Failed to check API key: no API key in header")
+			c.JSON(http.StatusForbidden, dto.Response{
+				Status:  http.StatusForbidden,
+				Message: "Forbidden",
+			})
+			c.Abort()
+			return
+		}
+
+		if apiKey == conf.SpecialApiKey {
+			c.Next()
+			return
+		}
+
+		// Decode API Key
+		secretKey, receivedHMAC, err := DecodeAPIKeyBase64(apiKey)
+		if err != nil {
+			fmt.Println("Failed to decode API key: ", err.Error())
+			c.JSON(http.StatusForbidden, dto.Response{
+				Status:  http.StatusForbidden,
+				Message: "Forbidden",
+			})
+			c.Abort()
+			return
+		}
+
+		// Verify HMAC
+		secret := conf.HMACKey
+		hmacVerified, expectedHMAC, err := VerifyAPIKeyHMAC(secretKey, receivedHMAC, secret)
+		if err != nil || !hmacVerified {
+			fmt.Println("Failed to verify API key: ", err.Error())
+			c.JSON(http.StatusForbidden, dto.Response{
+				Status:  http.StatusForbidden,
+				Message: "Forbidden",
+			})
+			c.Abort()
+			return
+		}
+
+		// Check if API Key already used
+		var usedApiKey models.VAUsedApiKey
+		err = config.DB.Debug().Where("secret_key = ?", secretKey).First(&usedApiKey).Error
+		if err == nil && usedApiKey.ID != uuid.Nil {
+			fmt.Println("Failed to check API key: API key already used")
+			c.JSON(http.StatusForbidden, dto.Response{
+				Status:  http.StatusForbidden,
+				Message: "Forbidden",
+			})
+			c.Abort()
+			return
+		}
+
+		// Save Used API Key
+		err = config.DB.Create(&models.VAUsedApiKey{
+			SecretKey:    secretKey,
+			Base64Key:    apiKey,
+			ReceivedHMAC: receivedHMAC,
+			ExpectedHMAC: expectedHMAC,
+		}).Error
+		if err != nil {
+			fmt.Println("Failed to save API key: ", err.Error())
+		}
+
+		c.Next()
 	}
 }
 

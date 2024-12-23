@@ -3,14 +3,14 @@ package routes
 import (
 	"github.com/fauzancodes/videoverse-api/app/controllers"
 	"github.com/fauzancodes/videoverse-api/app/middlewares"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
-func Route(app *echo.Echo) {
+func Route(app *gin.Engine) {
 	app.Static("/assets", "assets")
 	app.Static("/docs", "docs")
 
-	app.GET("/", controllers.Index, middlewares.StripHTMLMiddleware)
-	app.GET("/postman/collection", controllers.DownloadPostmanCollection, middlewares.StripHTMLMiddleware)
-	app.GET("/postman/environment", controllers.DownloadPostmanEnvironment, middlewares.StripHTMLMiddleware)
+	app.GET("/", middlewares.StripHTMLMiddleware(), controllers.Index)
+	app.GET("/postman/collection", middlewares.StripHTMLMiddleware(), controllers.DownloadPostmanCollection)
+	app.GET("/postman/environment", middlewares.StripHTMLMiddleware(), controllers.DownloadPostmanEnvironment)
 }

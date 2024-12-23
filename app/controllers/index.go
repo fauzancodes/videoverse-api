@@ -5,29 +5,28 @@ import (
 
 	"github.com/fauzancodes/videoverse-api/app/dto"
 	"github.com/fauzancodes/videoverse-api/app/pkg/upload"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
-func Index(c echo.Context) error {
+func Index(c *gin.Context) {
 	buf, statusCode, err := upload.GetRemoteFile("/assets/html/index.html")
 	if err != nil {
-		return c.JSON(
-			statusCode,
-			dto.Response{
-				Status:  statusCode,
-				Message: "Failed to get file",
-				Error:   err.Error(),
-			},
-		)
+		c.JSON(statusCode, dto.Response{
+			Status:  statusCode,
+			Message: "Failed to get file",
+			Error:   err.Error(),
+		})
+
+		return
 	}
 
-	return c.Blob(http.StatusOK, "text/html", buf.Bytes())
+	c.Data(http.StatusOK, "text/html", buf.Bytes())
 }
 
-func DownloadPostmanCollection(c echo.Context) error {
+func DownloadPostmanCollection(c *gin.Context) {
 	buf, statusCode, err := upload.GetRemoteFile("/docs/Sales Demo API.postman_collection.json")
 	if err != nil {
-		return c.JSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -35,17 +34,19 @@ func DownloadPostmanCollection(c echo.Context) error {
 				Error:   err.Error(),
 			},
 		)
+
+		return
 	}
 
-	c.Response().Header().Set("Content-Disposition", `attachment; filename="Sales Demo API.postman_collection.json"`)
-	c.Response().Header().Set("Content-Type", "application/octet-stream")
-	return c.Blob(http.StatusOK, "application/octet-stream", buf.Bytes())
+	c.Header("Content-Disposition", `attachment; filename="Sales Demo API.postman_collection.json"`)
+	c.Header("Content-Type", "application/octet-stream")
+	c.Data(http.StatusOK, "application/octet-stream", buf.Bytes())
 }
 
-func DownloadPostmanEnvironment(c echo.Context) error {
+func DownloadPostmanEnvironment(c *gin.Context) {
 	buf, statusCode, err := upload.GetRemoteFile("/docs/Sales Demo API.postman_environment.json")
 	if err != nil {
-		return c.JSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -53,9 +54,11 @@ func DownloadPostmanEnvironment(c echo.Context) error {
 				Error:   err.Error(),
 			},
 		)
+
+		return
 	}
 
-	c.Response().Header().Set("Content-Disposition", `attachment; filename="Sales Demo API.postman_environment.json"`)
-	c.Response().Header().Set("Content-Type", "application/octet-stream")
-	return c.Blob(http.StatusOK, "application/octet-stream", buf.Bytes())
+	c.Header("Content-Disposition", `attachment; filename="Sales Demo API.postman_environment.json"`)
+	c.Header("Content-Type", "application/octet-stream")
+	c.Data(http.StatusOK, "application/octet-stream", buf.Bytes())
 }

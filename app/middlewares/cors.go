@@ -1,14 +1,14 @@
 package middlewares
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 )
 
 // Cors Middleware
-func Cors() echo.MiddlewareFunc {
-	return middleware.CORSWithConfig(middleware.CORSConfig{
+func Cors() gin.HandlerFunc {
+	return cors.New(cors.Config{
 		AllowOrigins: []string{"*"},
-		AllowMethods: []string{echo.HEAD, echo.GET, echo.PUT, echo.POST, echo.DELETE},
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 	})
 }
