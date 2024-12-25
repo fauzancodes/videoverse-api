@@ -13,4 +13,6 @@ func Route(app *gin.Engine) {
 	app.GET("/", middlewares.StripHTMLMiddleware(), controllers.Index)
 	app.GET("/postman/collection", middlewares.StripHTMLMiddleware(), controllers.DownloadPostmanCollection)
 	app.GET("/postman/environment", middlewares.StripHTMLMiddleware(), controllers.DownloadPostmanEnvironment)
+
+	// api := app.Group("/v1", middlewares.StripHTMLMiddleware())
 }

@@ -37,6 +37,7 @@ func Database() *gorm.DB {
 func RunAutoMigration() {
 	err := DB.AutoMigrate(
 		&models.VAUsedApiKey{},
+		&models.VAUser{},
 	)
 	if err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)

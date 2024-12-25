@@ -1,0 +1,529 @@
+package controllers
+
+import (
+	"net/http"
+	"time"
+
+	"github.com/fauzancodes/videoverse-api/app/dto"
+	"github.com/fauzancodes/videoverse-api/app/pkg/bcrypt"
+	webToken "github.com/fauzancodes/videoverse-api/app/pkg/jwt"
+	"github.com/fauzancodes/videoverse-api/app/pkg/utils"
+	"github.com/fauzancodes/videoverse-api/app/repository"
+	"github.com/fauzancodes/videoverse-api/service"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+)
+
+func Register(c *gin.Context) {
+	var request dto.RegisterRequest
+	if err := c.Bind(&request); err != nil {
+		c.JSON(
+			http.StatusUnprocessableEntity,
+			dto.Response{
+				Status:  http.StatusUnprocessableEntity,
+				Message: "Invalid request body",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	if err := request.Validate(); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			dto.Response{
+				Status:  http.StatusBadRequest,
+				Message: "Invalid request value",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	param := utils.PopulatePaging(c, "")
+	_, check, _, _ := service.GetUsers(request.Email, param, []string{})
+	if len(check) > 0 {
+		c.JSON(
+			http.StatusBadRequest,
+			dto.Response{
+				Status:  http.StatusBadRequest,
+				Message: "Email has been registered",
+				Error:   "",
+			},
+		)
+
+		return
+	}
+
+	result, statusCode, err := service.CreateUser(dto.UserRequest{
+		Email:    request.Email,
+		Password: request.Password,
+	})
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to register",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	go service.SendEmailVerification(result, request.SuccessVerificationUrl, request.FailedVerificationUrl, utils.GetBaseUrl(c))
+
+	c.JSON(
+		statusCode,
+		dto.Response{
+			Status:  statusCode,
+			Message: "Success to register",
+			Data:    result,
+		},
+	)
+}
+
+func Login(c *gin.Context) {
+	var request dto.LoginRequest
+	if err := c.Bind(&request); err != nil {
+		c.JSON(
+			http.StatusUnprocessableEntity,
+			dto.Response{
+				Status:  http.StatusUnprocessableEntity,
+				Message: "Invalid request body",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	if err := request.Validate(); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			dto.Response{
+				Status:  http.StatusBadRequest,
+				Message: "Invalid request value",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	param := utils.PopulatePaging(c, "")
+	_, user, statusCode, _ := service.GetUsers(request.Email, param, []string{})
+	if len(user) == 0 {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Email not found",
+			},
+		)
+
+		return
+	}
+
+	err := bcrypt.VerifyPassword(request.Password, user[0].Password)
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			dto.Response{
+				Status:  http.StatusBadRequest,
+				Message: "Failed to verify password",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	claims := jwt.MapClaims{}
+	claims["id"] = user[0].ID
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	token, err := webToken.GenerateToken(&claims)
+	if err != nil {
+		c.JSON(
+			http.StatusUnauthorized,
+			dto.Response{
+				Status:  401,
+				Message: "Failed to generate jwt token",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	c.JSON(
+		statusCode,
+		dto.Response{
+			Status:  statusCode,
+			Message: "Success to login",
+			Data:    token,
+		},
+	)
+}
+
+func GetCurrentUser(c *gin.Context) {
+	userID, statusCode, err := utils.GetCurrentUserID(c)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to get current user ID",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	data, statusCode, err := service.GetUserByID(userID, []string{})
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Data not found",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	c.JSON(
+		statusCode,
+		dto.Response{
+			Status:  statusCode,
+			Message: "Success to get data",
+			Data:    data,
+		},
+	)
+}
+
+func UpdateAccount(c *gin.Context) {
+	var request dto.UserRequest
+	if err := c.Bind(&request); err != nil {
+		c.JSON(
+			http.StatusUnprocessableEntity,
+			dto.Response{
+				Status:  http.StatusUnprocessableEntity,
+				Message: "Invalid request body",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	userID, statusCode, err := utils.GetCurrentUserID(c)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to get current user ID",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	data, statusCode, err := service.UpdateUser(userID, request)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to update data",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		dto.Response{
+			Status:  200,
+			Message: "Success to update data",
+			Data:    data,
+		},
+	)
+}
+
+func DeleteAccount(c *gin.Context) {
+	userID, statusCode, err := utils.GetCurrentUserID(c)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to get current user ID",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	statusCode, err = service.DeleteUser(userID)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to delete data",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	c.JSON(
+		statusCode,
+		dto.Response{
+			Status:  statusCode,
+			Message: "Success to delete data",
+		},
+	)
+}
+
+func VerifyUser(c *gin.Context) {
+	token := c.Param("token")
+
+	data, successUrl, failedUrl, err := service.VerifyUser(token)
+	if err != nil {
+		if failedUrl != "" {
+			c.Redirect(http.StatusTemporaryRedirect, failedUrl)
+
+			return
+		}
+
+		c.JSON(
+			http.StatusNotFound,
+			dto.Response{
+				Status:  500,
+				Message: "Failed to verify user",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	if successUrl != "" {
+		c.Redirect(http.StatusTemporaryRedirect, successUrl)
+
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		dto.Response{
+			Status:  200,
+			Message: "Success to verify user",
+			Data:    data,
+		},
+	)
+}
+
+func ResendEmailVerification(c *gin.Context) {
+	var request dto.ResendEmailVerification
+	if err := c.Bind(&request); err != nil {
+		c.JSON(
+			http.StatusUnprocessableEntity,
+			dto.Response{
+				Status:  http.StatusUnprocessableEntity,
+				Message: "Invalid request body",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	if err := request.Validate(); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			dto.Response{
+				Status:  http.StatusBadRequest,
+				Message: "Invalid request value",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	user, _, _, err := repository.GetUsers(dto.FindParameter{
+		Filter:       "deleted_at IS NULL AND email = ?",
+		FilterValues: []any{request.Email},
+	}, []string{})
+	if err != nil || len(user) == 0 {
+		c.JSON(
+			http.StatusNotFound,
+			dto.Response{
+				Status:  404,
+				Message: "Failed to get user",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	if user[0].IsVerified {
+		c.JSON(
+			http.StatusBadRequest,
+			dto.Response{
+				Status:  http.StatusBadRequest,
+				Message: "User has been verified",
+			},
+		)
+
+		return
+	}
+
+	go service.SendEmailVerification(user[0], request.SuccessVerificationUrl, request.FailedVerificationUrl, utils.GetBaseUrl(c))
+
+	c.JSON(
+		http.StatusOK,
+		dto.Response{
+			Status:  200,
+			Message: "Success to send email verification",
+		},
+	)
+}
+
+func SendForgotPasswordRequest(c *gin.Context) {
+	var request dto.SendForgotPasswordRequest
+	if err := c.Bind(&request); err != nil {
+		c.JSON(
+			http.StatusUnprocessableEntity,
+			dto.Response{
+				Status:  http.StatusUnprocessableEntity,
+				Message: "Invalid request body",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	if err := request.Validate(); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			dto.Response{
+				Status:  http.StatusBadRequest,
+				Message: "Invalid request value",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	user, _, _, err := repository.GetUsers(dto.FindParameter{
+		Filter:       "deleted_at IS NULL AND email = ?",
+		FilterValues: []any{request.Email},
+	}, []string{})
+	if err != nil || len(user) == 0 {
+		c.JSON(
+			http.StatusNotFound,
+			dto.Response{
+				Status:  404,
+				Message: "Failed to get user",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	go service.SendResetPasswordRequest(user[0], request.RedirectUrl, utils.GetBaseUrl(c))
+
+	c.JSON(
+		http.StatusOK,
+		dto.Response{
+			Status:  200,
+			Message: "Success to send reset password request",
+		},
+	)
+}
+
+func SendResetPasswordRequestInstruction(c *gin.Context) {
+	token := c.Param("token")
+
+	c.JSON(
+		http.StatusOK,
+		dto.Response{
+			Status:  200,
+			Message: "You should include a redirect_url field, so that the request will be forwarded to your url, then in that url create a page for the user to fill in their new password, then send the password from the user along with the token in the url param to the POST /auth/reset-password endpoint",
+			Data:    token,
+		},
+	)
+}
+
+func ResetPassword(c *gin.Context) {
+	var request dto.ResetPasswordRequest
+	if err := c.Bind(&request); err != nil {
+		c.JSON(
+			http.StatusUnprocessableEntity,
+			dto.Response{
+				Status:  http.StatusUnprocessableEntity,
+				Message: "Invalid request body",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	if err := request.Validate(); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			dto.Response{
+				Status:  http.StatusBadRequest,
+				Message: "Invalid request value",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	data, statusCode, err := service.ResetPassword(request)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to reset password",
+				Error:   err.Error(),
+			},
+		)
+
+		return
+	}
+
+	c.JSON(
+		statusCode,
+		dto.Response{
+			Status:  statusCode,
+			Message: "Success to reset password",
+			Data:    data,
+		},
+	)
+}

@@ -6,31 +6,35 @@ import (
 
 	"github.com/fauzancodes/videoverse-api/app/dto"
 	"github.com/fauzancodes/videoverse-api/app/pkg/jwt"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
-func Auth(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		token := c.Request().Header.Get("Authorization")
+func Auth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader("Authorization")
 
 		if token == "" {
-			return c.JSON(http.StatusUnauthorized, dto.Response{
+			c.JSON(http.StatusUnauthorized, dto.Response{
 				Status:  http.StatusBadRequest,
 				Message: "No jwt token provided",
 			})
+
+			return
 		}
 
 		token = strings.Split(token, " ")[1]
 		claims, err := jwt.DecodeToken(token)
 
 		if err != nil {
-			return c.JSON(http.StatusUnauthorized, dto.Response{
+			c.JSON(http.StatusUnauthorized, dto.Response{
 				Status:  http.StatusUnauthorized,
 				Message: "Failed to decode jwt token",
 			})
+
+			return
 		}
 
 		c.Set("currentUser", claims)
-		return next(c)
+		c.Next()
 	}
 }

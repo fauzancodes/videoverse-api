@@ -10,6 +10,7 @@ require (
 	github.com/gin-contrib/secure v1.1.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
+	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 	github.com/grokify/html-strip-tags-go v0.1.0
@@ -22,6 +23,7 @@ require (
 )
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect

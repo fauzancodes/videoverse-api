@@ -1,11 +1,16 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"math"
+	"net/http"
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/exp/rand"
 	"gorm.io/gorm"
@@ -46,12 +51,31 @@ func GenerateRandomNumber(length int) string {
 	return randomString
 }
 
-func GetBaseUrl(c echo.Context) (response string) {
-	response = fmt.Sprintf("%v://%v", c.Scheme(), c.Request().Host)
+func GetBaseUrl(c *gin.Context) (response string) {
+	scheme := "http"
+	if c.Request.TLS != nil {
+		scheme = "https"
+	}
+	response = fmt.Sprintf("%v://%v", scheme, c.Request.Host)
 
 	return
 }
 
 func RoundFloat(number float64) (result int) {
 	return int(math.Round(number))
+}
+
+func GetCurrentUserID(c *gin.Context) (userID string, statusCode int, err error) {
+	authContext, exist := c.Get("currentUser")
+	if !exist {
+		err = errors.New("no current user data in context")
+		statusCode = http.StatusInternalServerError
+
+		return
+	}
+
+	userID = authContext.(jwt.MapClaims)["id"].(string)
+	log.Printf("Current user ID: %v", userID)
+
+	return
 }

@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
 type PagingRequest struct {
@@ -33,14 +33,14 @@ type PagingResponse struct {
 	Order         string      `default:"created_at DESC" json:"order"`
 }
 
-func PopulatePaging(c echo.Context, custom string) (param PagingRequest) {
-	customval := c.QueryParam(custom)
-	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+func PopulatePaging(c *gin.Context, custom string) (param PagingRequest) {
+	customval := c.Query(custom)
+	limit, _ := strconv.Atoi(c.Query("limit"))
 	if limit == 0 {
 		limit = 10
 	}
-	offset, _ := strconv.Atoi(c.QueryParam("offset"))
-	page, _ := strconv.Atoi(c.QueryParam("page"))
+	offset, _ := strconv.Atoi(c.Query("offset"))
+	page, _ := strconv.Atoi(c.Query("page"))
 	if page == 0 && offset == 0 {
 		page = 1
 		offset = 0
@@ -48,25 +48,25 @@ func PopulatePaging(c echo.Context, custom string) (param PagingRequest) {
 	if page >= 1 && offset == 0 {
 		offset = (page - 1) * limit
 	}
-	draw, _ := strconv.Atoi(c.QueryParam("draw"))
+	draw, _ := strconv.Atoi(c.Query("draw"))
 	if draw == 0 {
 		draw = 1
 	}
-	sort := c.QueryParam("sort")
+	sort := c.Query("sort")
 	if strings.ToLower(sort) == "asc" {
 		sort = "ASC"
 	}
 	if strings.ToLower(sort) == "desc" {
 		sort = "DESC"
 	}
-	order := c.QueryParam("order")
+	order := c.Query("order")
 	if order == "" {
 		order = "created_at " + sort
 	} else {
 		order = order + " " + sort + ", created_at " + sort
 	}
 	param = PagingRequest{
-		Search: c.QueryParam("search"),
+		Search: c.Query("search"),
 		Limit:  limit,
 		Offset: offset,
 		Order:  order,

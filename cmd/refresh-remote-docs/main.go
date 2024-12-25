@@ -32,11 +32,15 @@ func main() {
 
 	srcs := []string{
 		"assets/html/index.html",
+		"assets/html/email-verification.html",
+		"assets/html/reset-password.html",
 		"docs/Sales Demo API.postman_collection.json",
 		"docs/Sales Demo API.postman_environment.json",
 	}
 	dsts := []string{
 		folder + "/assets/html/index.html",
+		folder + "/assets/html/email-verification.html",
+		folder + "/assets/html/reset-password.html",
 		folder + "/docs/Sales Demo API.postman_collection.json",
 		folder + "/docs/Sales Demo API.postman_environment.json",
 	}
