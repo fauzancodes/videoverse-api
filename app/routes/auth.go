@@ -6,26 +6,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthRoute(app *gin.Engine) {
-	auth := app.Group("/auth", middlewares.CheckAPIKey())
+func AuthRoute(app *gin.RouterGroup) {
+	auth := app.Group("/auth")
 	{
 		auth.POST("/register", controllers.Register)
 		auth.POST("/login", controllers.Login)
-		auth.GET("/user", middlewares.Auth(), controllers.GetCurrentUser)
-		auth.PATCH("/update-account", middlewares.Auth(), controllers.UpdateAccount)
-		auth.DELETE("/delete-account", middlewares.Auth(), controllers.DeleteAccount)
+		auth.GET("/user", middlewares.CheckAPIKey(), middlewares.Auth(), controllers.GetCurrentUser)
+		auth.PATCH("/update-account", middlewares.CheckAPIKey(), middlewares.Auth(), controllers.UpdateAccount)
+		auth.DELETE("/delete-account", middlewares.CheckAPIKey(), middlewares.Auth(), controllers.DeleteAccount)
 
 		emailVerfication := auth.Group("/email-verification")
 		{
 			emailVerfication.GET("/:token", controllers.VerifyUser)
-			emailVerfication.POST("/resend", controllers.ResendEmailVerification)
+			emailVerfication.POST("/resend", middlewares.CheckAPIKey(), controllers.ResendEmailVerification)
 		}
 
 		resetPassword := auth.Group("/reset-password")
 		{
-			resetPassword.POST("/send", controllers.SendForgotPasswordRequest)
+			resetPassword.POST("/send", middlewares.CheckAPIKey(), controllers.SendForgotPasswordRequest)
 			resetPassword.GET("/instruction/:token", controllers.SendResetPasswordRequestInstruction)
-			resetPassword.POST("", controllers.ResetPassword)
+			resetPassword.POST("", middlewares.CheckAPIKey(), controllers.ResetPassword)
 		}
 	}
 }

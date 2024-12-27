@@ -14,5 +14,7 @@ func Route(app *gin.Engine) {
 	app.GET("/postman/collection", middlewares.StripHTMLMiddleware(), controllers.DownloadPostmanCollection)
 	app.GET("/postman/environment", middlewares.StripHTMLMiddleware(), controllers.DownloadPostmanEnvironment)
 
-	// api := app.Group("/v1", middlewares.StripHTMLMiddleware())
+	api := app.Group("/v1", middlewares.StripHTMLMiddleware())
+
+	AuthRoute(api)
 }

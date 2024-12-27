@@ -470,7 +470,7 @@ func SendResetPasswordRequestInstruction(c *gin.Context) {
 		http.StatusOK,
 		dto.Response{
 			Status:  200,
-			Message: "You should include a redirect_url field, so that the request will be forwarded to your url, then in that url create a page for the user to fill in their new password, then send the password from the user along with the token in the url param to the POST /auth/reset-password endpoint",
+			Message: "You should include a redirect_url field, so that the request will be forwarded to your url, then in that url create a page for the user to fill in their new password, then send the password from the user along with the token in the url param to the POST /v1/auth/reset-password endpoint",
 			Data:    token,
 		},
 	)

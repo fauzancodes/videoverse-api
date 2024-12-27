@@ -28,7 +28,7 @@ func SendEmailVerification(user models.VAUser, successUrl, failedUrl, appUrl str
 		return
 	}
 
-	verificationUrl := fmt.Sprintf("%v/auth/email-verification/%v", appUrl, token)
+	verificationUrl := fmt.Sprintf("%v/v1/auth/email-verification/%v", appUrl, token)
 
 	fill := dto.EmailVerfication{
 		Name:            user.Email,
@@ -86,7 +86,7 @@ func SendResetPasswordRequest(user models.VAUser, redirectUrl, appUrl string) {
 	if redirectUrl != "" {
 		resetPasswordUrl = fmt.Sprintf("%v/%v", redirectUrl, token)
 	} else {
-		resetPasswordUrl = fmt.Sprintf("%v/auth/reset-password/instruction/%v", appUrl, token)
+		resetPasswordUrl = fmt.Sprintf("%v/v1/auth/reset-password/instruction/%v", appUrl, token)
 	}
 
 	fill := dto.ResetPassword{

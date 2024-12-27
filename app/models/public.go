@@ -23,5 +23,5 @@ type VAUsedApiKey struct {
 }
 
 func (VAUsedApiKey) TableName() string {
-	return "sda_used_api_keys"
+	return "va_used_api_keys"
 }
