@@ -9,7 +9,7 @@ import (
 	webToken "github.com/fauzancodes/videoverse-api/app/pkg/jwt"
 	"github.com/fauzancodes/videoverse-api/app/pkg/utils"
 	"github.com/fauzancodes/videoverse-api/app/repository"
-	"github.com/fauzancodes/videoverse-api/service"
+	"github.com/fauzancodes/videoverse-api/app/service"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
