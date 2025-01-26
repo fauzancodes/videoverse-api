@@ -38,6 +38,8 @@ func RunAutoMigration() {
 	err := DB.AutoMigrate(
 		&models.VAUsedApiKey{},
 		&models.VAUser{},
+		&models.VAProfile{},
+		&models.VASocialMedia{},
 	)
 	if err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)

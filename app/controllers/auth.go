@@ -74,6 +74,27 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	if request.Firstname != "" || request.Lastname != "" || request.Gender != "" {
+		profile, statusCode, err := service.CreateProfile(result.ID.String(), dto.ProfileRequest{
+			Firstname: request.Firstname,
+			Lastname:  request.Lastname,
+			Gender:    request.Gender,
+		})
+		if err != nil {
+			c.JSON(
+				statusCode,
+				dto.Response{
+					Status:  statusCode,
+					Message: "Failed to create profile",
+					Error:   err.Error(),
+				},
+			)
+
+			return
+		}
+		result.Profile = &profile
+	}
+
 	go service.SendEmailVerification(result, request.SuccessVerificationUrl, request.FailedVerificationUrl, utils.GetBaseUrl(c))
 
 	c.JSON(

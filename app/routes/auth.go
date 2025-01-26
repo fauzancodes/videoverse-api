@@ -28,4 +28,10 @@ func AuthRoute(api *gin.RouterGroup) {
 			resetPassword.POST("", middlewares.CheckAPIKey(), controllers.ResetPassword)
 		}
 	}
+
+	profile := api.Group("/profile", middlewares.CheckAPIKey(), middlewares.Auth())
+	{
+		profile.GET("", controllers.GetProfile)
+		profile.PATCH("", controllers.UpdateProfile)
+	}
 }

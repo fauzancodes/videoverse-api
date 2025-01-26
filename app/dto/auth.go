@@ -1,6 +1,9 @@
 package dto
 
 import (
+	"errors"
+	"strings"
+
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 )
@@ -31,6 +34,9 @@ func (request ResetPasswordRequest) Validate() error {
 }
 
 type RegisterRequest struct {
+	Firstname              string `json:"firstname"`
+	Lastname               string `json:"lastname"`
+	Gender                 string `json:"gender"`
 	Email                  string `json:"email"`
 	Password               string `json:"password"`
 	SuccessVerificationUrl string `json:"success_verification_url"`
@@ -38,6 +44,17 @@ type RegisterRequest struct {
 }
 
 func (request RegisterRequest) Validate() error {
+	genders := []string{"male", "female"}
+	var genderAccepted bool
+	for _, gender := range genders {
+		if strings.EqualFold(request.Gender, gender) {
+			genderAccepted = true
+		}
+	}
+	if !genderAccepted {
+		return errors.New("allowed genders: " + strings.Join(genders, ", "))
+	}
+
 	return validation.ValidateStruct(
 		&request,
 		validation.Field(&request.Email, validation.Required, is.Email),

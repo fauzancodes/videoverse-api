@@ -23,7 +23,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"greybyte0222@gmail.com\",\r\n  \"password\": \"Password@123\",\r\n  \"success_verification_url\": \"https://fauzancodes.id\",\r\n  \"failed_verification_url\": \"https://fauzancodes.id/about-me\"\r\n}",
+							"raw": "{\r\n  \"firstname\": \"Grey\",\r\n  \"lastname\": \"Black\",\r\n  \"gender\": \"male\",\r\n  \"email\": \"greybyteX@gmail.com\",\r\n  \"password\": \"Password@123\",\r\n  \"success_verification_url\": \"https://fauzancodes.id\",\r\n  \"failed_verification_url\": \"https://fauzancodes.id/about-me\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -291,6 +291,88 @@
 								"v1",
 								"auth",
 								"reset-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "Get Current User Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/profile",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Current User Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"Grey\",\r\n    \"lastname\": \"Black\",\r\n    \"gender\": \"male\",\r\n    \"picture\": \"https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/gray-background-7131-98db5e6ffc4972baa4087760291cbc3e@1x.jpg\",\r\n    \"description\": \"Lorem ipsum dolor sit amet\",\r\n    \"location\": \"Indonesia\",\r\n    \"social_media\": [\r\n        {\r\n            \"name\": \"instagram\",\r\n            \"link\": \"\"\r\n        },\r\n        {\r\n            \"name\": \"linkedin\",\r\n            \"link\": \"https://www.linkedin.com/\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/v1/profile",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"profile"
 							]
 						}
 					},
