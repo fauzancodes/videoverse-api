@@ -14,24 +14,20 @@ func Auth() gin.HandlerFunc {
 		token := c.GetHeader("Authorization")
 
 		if token == "" {
-			c.JSON(http.StatusUnauthorized, dto.Response{
+			c.AbortWithStatusJSON(http.StatusUnauthorized, dto.Response{
 				Status:  http.StatusBadRequest,
 				Message: "No jwt token provided",
 			})
-
-			return
 		}
 
 		token = strings.Split(token, " ")[1]
 		claims, err := jwt.DecodeToken(token)
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, dto.Response{
+			c.AbortWithStatusJSON(http.StatusUnauthorized, dto.Response{
 				Status:  http.StatusUnauthorized,
 				Message: "Failed to decode jwt token",
 			})
-
-			return
 		}
 
 		c.Set("currentUser", claims)

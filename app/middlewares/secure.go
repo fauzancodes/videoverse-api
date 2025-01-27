@@ -76,12 +76,10 @@ func CheckAPIKey() gin.HandlerFunc {
 		apiKey := c.GetHeader("X-API-KEY")
 		if apiKey == "" {
 			fmt.Println("Failed to check API key: no API key in header")
-			c.JSON(http.StatusForbidden, dto.Response{
+			c.AbortWithStatusJSON(http.StatusForbidden, dto.Response{
 				Status:  http.StatusForbidden,
 				Message: "Forbidden",
 			})
-			c.Abort()
-			return
 		}
 
 		if apiKey == conf.SpecialApiKey {
@@ -93,12 +91,10 @@ func CheckAPIKey() gin.HandlerFunc {
 		secretKey, receivedHMAC, err := DecodeAPIKeyBase64(apiKey)
 		if err != nil {
 			fmt.Println("Failed to decode API key: ", err.Error())
-			c.JSON(http.StatusForbidden, dto.Response{
+			c.AbortWithStatusJSON(http.StatusForbidden, dto.Response{
 				Status:  http.StatusForbidden,
 				Message: "Forbidden",
 			})
-			c.Abort()
-			return
 		}
 
 		// Verify HMAC
@@ -106,11 +102,10 @@ func CheckAPIKey() gin.HandlerFunc {
 		hmacVerified, expectedHMAC, err := VerifyAPIKeyHMAC(secretKey, receivedHMAC, secret)
 		if err != nil || !hmacVerified {
 			fmt.Println("Failed to verify API key: ", err.Error())
-			c.JSON(http.StatusForbidden, dto.Response{
+			c.AbortWithStatusJSON(http.StatusForbidden, dto.Response{
 				Status:  http.StatusForbidden,
 				Message: "Forbidden",
 			})
-			c.Abort()
 			return
 		}
 
@@ -119,11 +114,10 @@ func CheckAPIKey() gin.HandlerFunc {
 		err = config.DB.Debug().Where("secret_key = ?", secretKey).First(&usedApiKey).Error
 		if err == nil && usedApiKey.ID != uuid.Nil {
 			fmt.Println("Failed to check API key: API key already used")
-			c.JSON(http.StatusForbidden, dto.Response{
+			c.AbortWithStatusJSON(http.StatusForbidden, dto.Response{
 				Status:  http.StatusForbidden,
 				Message: "Forbidden",
 			})
-			c.Abort()
 			return
 		}
 

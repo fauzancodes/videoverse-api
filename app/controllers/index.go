@@ -11,13 +11,11 @@ import (
 func Index(c *gin.Context) {
 	buf, statusCode, err := upload.GetRemoteFile("/assets/html/index.html")
 	if err != nil {
-		c.JSON(statusCode, dto.Response{
+		c.AbortWithStatusJSON(statusCode, dto.Response{
 			Status:  statusCode,
 			Message: "Failed to get file",
 			Error:   err.Error(),
 		})
-
-		return
 	}
 
 	c.Data(http.StatusOK, "text/html", buf.Bytes())
@@ -26,7 +24,7 @@ func Index(c *gin.Context) {
 func DownloadPostmanCollection(c *gin.Context) {
 	buf, statusCode, err := upload.GetRemoteFile("/docs/Sales Demo API.postman_collection.json")
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -34,8 +32,6 @@ func DownloadPostmanCollection(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
-
-		return
 	}
 
 	c.Header("Content-Disposition", `attachment; filename="Sales Demo API.postman_collection.json"`)
@@ -46,7 +42,7 @@ func DownloadPostmanCollection(c *gin.Context) {
 func DownloadPostmanEnvironment(c *gin.Context) {
 	buf, statusCode, err := upload.GetRemoteFile("/docs/Sales Demo API.postman_environment.json")
 	if err != nil {
-		c.JSON(
+		c.AbortWithStatusJSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -54,8 +50,6 @@ func DownloadPostmanEnvironment(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
-
-		return
 	}
 
 	c.Header("Content-Disposition", `attachment; filename="Sales Demo API.postman_environment.json"`)

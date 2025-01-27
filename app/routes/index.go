@@ -17,4 +17,5 @@ func Route(app *gin.Engine) {
 	api := app.Group("/v1", middlewares.StripHTMLMiddleware())
 
 	AuthRoute(api)
+	VideoRoute(api)
 }
