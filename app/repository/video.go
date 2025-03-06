@@ -22,6 +22,14 @@ func GetVideoByID(id uuid.UUID, preloadFields []string) (response models.VAVideo
 	return
 }
 
+func GetVideoByIDs(ids []uuid.UUID, preloadFields []string) (responses []models.VAVideo, err error) {
+	db := utils.BuildPreload(config.DB, preloadFields)
+
+	err = db.Where("id IN ?", ids).Find(&responses).Error
+
+	return
+}
+
 func GetVideos(param dto.FindParameter, preloadFields []string) (responses []models.VAVideo, total int64, totalFiltered int64, err error) {
 	err = config.DB.Model(responses).Where(param.BaseFilter, param.BaseFilterValues...).Count(&total).Error
 	if err != nil {

@@ -36,7 +36,7 @@ func GetUserByID(id string, preloadFields []string) (data models.VAUser, statusC
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 	data, err = repository.GetUserByID(parsedUUID, preloadFields)
@@ -98,7 +98,7 @@ func UpdateUser(id string, request dto.UserRequest) (response models.VAUser, sta
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 	data, err := repository.GetUserByID(parsedUUID, []string{})
@@ -135,7 +135,7 @@ func DeleteUser(id string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 

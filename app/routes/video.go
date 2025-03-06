@@ -27,5 +27,16 @@ func VideoRoute(api *gin.RouterGroup) {
 		videos.GET("/:id", middlewares.Auth(), controllers.GetVideoByID)
 		videos.PATCH("/:id", middlewares.Auth(), controllers.UpdateVideo)
 		videos.DELETE("/:id", middlewares.Auth(), controllers.DeleteVideo)
+
+		playlist := videos.Group("/playlists")
+		{
+			playlist.POST("", middlewares.Auth(), controllers.CreatePlaylist)
+			playlist.GET("", middlewares.Auth(), controllers.GetPlaylists)
+			playlist.GET("/public", controllers.GetPublicPlaylists)
+			playlist.GET("/public/:id", controllers.GetPublicPlaylistByID)
+			playlist.GET("/:id", middlewares.Auth(), controllers.GetPlaylistByID)
+			playlist.PATCH("/:id", middlewares.Auth(), controllers.UpdatePlaylist)
+			playlist.DELETE("/:id", middlewares.Auth(), controllers.DeletePlaylist)
+		}
 	}
 }

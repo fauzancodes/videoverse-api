@@ -20,7 +20,7 @@ func CreateProfile(userID string, request dto.ProfileRequest) (response models.V
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
 		err = errors.New("failed to parse user UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 
@@ -80,7 +80,7 @@ func GetProfileByID(id string, preloadFields []string) (data models.VAProfile, s
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 
@@ -147,7 +147,7 @@ func UpdateProfile(id string, request dto.ProfileRequest) (response models.VAPro
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 	data, err := repository.GetProfileByID(parsedUUID, []string{})
@@ -231,7 +231,7 @@ func DeleteProfile(id string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 

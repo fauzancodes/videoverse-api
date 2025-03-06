@@ -19,13 +19,13 @@ func CreateVideo(userID string, request dto.VideoRequest) (response models.VAVid
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
 		err = errors.New("failed to parse user UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 	parsedCategoryUUID, err := uuid.Parse(request.CategoryID)
 	if err != nil {
 		err = errors.New("failed to parse category UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 
@@ -63,7 +63,7 @@ func GetVideoByID(id string, preloadFields []string) (data models.VAVideo, statu
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 
@@ -140,7 +140,7 @@ func UpdateVideo(id string, request dto.VideoRequest) (response models.VAVideo, 
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 
@@ -167,7 +167,7 @@ func UpdateVideo(id string, request dto.VideoRequest) (response models.VAVideo, 
 		parsedCategoryUUID, err = uuid.Parse(request.CategoryID)
 		if err != nil {
 			err = errors.New("failed to parse category UUID: " + err.Error())
-			statusCode = http.StatusInternalServerError
+			statusCode = http.StatusBadRequest
 			return
 		}
 		data.CategoryID = &parsedCategoryUUID
@@ -208,7 +208,7 @@ func DeleteVideo(id string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 
@@ -239,7 +239,7 @@ func CreateVideoCategory(userID string, request dto.VideoCategoryRequest) (respo
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
 		err = errors.New("failed to parse user UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 
@@ -265,7 +265,7 @@ func GetVideoCategoryByID(id string, preloadFields []string) (data models.VAVide
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 
@@ -334,7 +334,7 @@ func UpdateVideoCategory(id string, request dto.VideoCategoryRequest) (response 
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 
@@ -373,7 +373,7 @@ func DeleteVideoCategory(id string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = errors.New("failed to parse UUID: " + err.Error())
-		statusCode = http.StatusInternalServerError
+		statusCode = http.StatusBadRequest
 		return
 	}
 

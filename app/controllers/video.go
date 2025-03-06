@@ -126,20 +126,19 @@ func GetVideos(c *gin.Context) {
 }
 
 func GetPublicVideos(c *gin.Context) {
-	userID, statusCode, err := utils.GetCurrentUserID(c)
+	visibility := "public"
+	userID, statusCode, err := utils.QueryParamUUID(c, "user_id")
 	if err != nil {
 		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
-				Message: "Failed to get current userID",
+				Message: "Invalid parameter",
 				Error:   err.Error(),
 			},
 		)
 		return
 	}
-
-	visibility := "public"
 	categoryID, statusCode, err := utils.QueryParamUUID(c, "category_id")
 	if err != nil {
 		c.JSON(
