@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/fauzancodes/videoverse-api/app/dto"
 	"github.com/fauzancodes/videoverse-api/app/models"
 	"github.com/fauzancodes/videoverse-api/app/pkg/utils"
 	"github.com/fauzancodes/videoverse-api/app/repository"
 	"github.com/google/uuid"
+	"github.com/guregu/null"
 	"gorm.io/gorm"
 )
 
@@ -22,6 +24,16 @@ func CreateProfile(userID string, request dto.ProfileRequest) (response models.V
 		return
 	}
 
+	var dateOfBirth time.Time
+	if request.DateOfBirth != "" {
+		dateOfBirth, err = time.ParseInLocation(time.DateOnly, request.DateOfBirth, utils.GetTimeLocationAsiaJakarta())
+		if err != nil {
+			err = errors.New("failed to parse date_of_birth: " + err.Error())
+			statusCode = http.StatusBadRequest
+			return
+		}
+	}
+
 	data := models.VAProfile{
 		Firstname:   request.Firstname,
 		Lastname:    request.Lastname,
@@ -30,6 +42,9 @@ func CreateProfile(userID string, request dto.ProfileRequest) (response models.V
 		Description: request.Description,
 		Location:    request.Location,
 		UserID:      parsedUserUUID,
+	}
+	if !dateOfBirth.IsZero() {
+		data.DateOfBirth = null.TimeFrom(dateOfBirth)
 	}
 
 	response, err = repository.CreateProfile(data)
@@ -165,6 +180,23 @@ func UpdateProfile(id string, request dto.ProfileRequest) (response models.VAPro
 	if request.Picture != "" {
 		data.Picture = request.Picture
 	}
+	if request.DateOfBirth != "" {
+		var dateOfBirth time.Time
+		dateOfBirth, err = time.ParseInLocation(time.DateOnly, request.DateOfBirth, utils.GetTimeLocationAsiaJakarta())
+		if err != nil {
+			err = errors.New("failed to parse date_of_birth: " + err.Error())
+			statusCode = http.StatusBadRequest
+			return
+		}
+		data.DateOfBirth = null.TimeFrom(dateOfBirth)
+	}
+
+	response, err = repository.UpdateProfile(data)
+	if err != nil {
+		err = errors.New("failed to update data: " + err.Error())
+		statusCode = http.StatusInternalServerError
+		return
+	}
 
 	if len(request.SocialMedia) > 0 {
 		err = repository.DeleteSocialMediaByProfileID(data.ID)
@@ -189,13 +221,6 @@ func UpdateProfile(id string, request dto.ProfileRequest) (response models.VAPro
 			statusCode = http.StatusInternalServerError
 			return
 		}
-	}
-
-	response, err = repository.UpdateProfile(data)
-	if err != nil {
-		err = errors.New("failed to update data: " + err.Error())
-		statusCode = http.StatusInternalServerError
-		return
 	}
 
 	statusCode = http.StatusOK

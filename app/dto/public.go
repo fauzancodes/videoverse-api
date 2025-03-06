@@ -3,10 +3,10 @@ package dto
 import "github.com/google/uuid"
 
 type Response struct {
-	Status  int         `json:"status,omitempty"`
-	Message string      `json:"message,omitempty"`
-	Data    interface{} `json:"data,omitempty"`
-	Error   string      `json:"error,omitempty"`
+	Status  int    `json:"status,omitempty"`
+	Message string `json:"message,omitempty"`
+	Data    any    `json:"data,omitempty"`
+	Error   string `json:"error,omitempty"`
 }
 
 type FindParameter struct {

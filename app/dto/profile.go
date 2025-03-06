@@ -12,6 +12,7 @@ type ProfileRequest struct {
 	Firstname   string               `json:"firstname"`
 	Lastname    string               `json:"lastname"`
 	Gender      string               `json:"gender"`
+	DateOfBirth string               `json:"date_of_birth"`
 	Picture     string               `json:"picture"`
 	Description string               `json:"description"`
 	Location    string               `json:"location"`

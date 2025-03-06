@@ -14,7 +14,7 @@ import (
 	"github.com/fauzancodes/videoverse-api/app/config"
 )
 
-func UploadFile(file interface{}, folder string, filename string) (secureUrl, publicID, cloudName string, err error) {
+func UploadFile(file any, folder string, filename string) (secureUrl, publicID, cloudName string, err error) {
 	cloudName = config.LoadConfig().CloudinaryCloudName
 	apiKey := config.LoadConfig().CloudinaryAPIKey
 	apiSecret := config.LoadConfig().CLoudinaryAPISecret

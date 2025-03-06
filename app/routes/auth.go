@@ -29,7 +29,7 @@ func AuthRoute(api *gin.RouterGroup) {
 		}
 	}
 
-	profile := api.Group("/profile", middlewares.CheckAPIKey(), middlewares.Auth())
+	profile := api.Group("/profiles", middlewares.CheckAPIKey(), middlewares.Auth())
 	{
 		profile.GET("", controllers.GetProfile)
 		profile.PATCH("", controllers.UpdateProfile)

@@ -11,8 +11,10 @@ import (
 
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		//retrieve token from http header
 		token := c.GetHeader("Authorization")
 
+		//check if token is in http header
 		if token == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, dto.Response{
 				Status:  http.StatusBadRequest,
@@ -20,6 +22,7 @@ func Auth() gin.HandlerFunc {
 			})
 		}
 
+		//decode token
 		token = strings.Split(token, " ")[1]
 		claims, err := jwt.DecodeToken(token)
 
@@ -27,6 +30,7 @@ func Auth() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, dto.Response{
 				Status:  http.StatusUnauthorized,
 				Message: "Failed to decode jwt token",
+				Error:   err.Error(),
 			})
 		}
 

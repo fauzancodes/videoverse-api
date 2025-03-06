@@ -12,7 +12,7 @@ import (
 func Upload(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -20,11 +20,12 @@ func Upload(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	file, err := c.FormFile("file")
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusBadRequest,
 			dto.Response{
 				Status:  500,
@@ -32,11 +33,12 @@ func Upload(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	responseURL, statusCode, err := service.Upload(file, userID)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -44,6 +46,7 @@ func Upload(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	c.JSON(

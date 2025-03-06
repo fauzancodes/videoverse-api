@@ -15,7 +15,7 @@ import (
 func UpdateProfile(c *gin.Context) {
 	var request dto.ProfileRequest
 	if err := c.Bind(&request); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusUnprocessableEntity,
 			dto.Response{
 				Status:  http.StatusUnprocessableEntity,
@@ -23,10 +23,11 @@ func UpdateProfile(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	if err := request.Validate(); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusBadRequest,
 			dto.Response{
 				Status:  http.StatusBadRequest,
@@ -34,12 +35,13 @@ func UpdateProfile(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	if len(request.SocialMedia) > 0 {
 		for _, item := range request.SocialMedia {
 			if err := item.Validate(); err != nil {
-				c.AbortWithStatusJSON(
+				c.JSON(
 					http.StatusBadRequest,
 					dto.Response{
 						Status:  http.StatusBadRequest,
@@ -47,13 +49,14 @@ func UpdateProfile(c *gin.Context) {
 						Error:   err.Error(),
 					},
 				)
+				return
 			}
 		}
 	}
 
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -61,6 +64,7 @@ func UpdateProfile(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	var isCreate bool
@@ -79,7 +83,7 @@ func UpdateProfile(c *gin.Context) {
 		result, statusCode, err = service.UpdateProfile(profile[0].ID.String(), request)
 	}
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -87,6 +91,7 @@ func UpdateProfile(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	c.JSON(
@@ -102,7 +107,7 @@ func UpdateProfile(c *gin.Context) {
 func GetProfile(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -110,6 +115,7 @@ func GetProfile(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	profile, _, _, err := repository.GetProfiles(dto.FindParameter{
@@ -120,7 +126,7 @@ func GetProfile(c *gin.Context) {
 		if err == nil {
 			err = errors.New("profile not found")
 		}
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusNotFound,
 			dto.Response{
 				Status:  http.StatusNotFound,
@@ -128,6 +134,7 @@ func GetProfile(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	c.JSON(

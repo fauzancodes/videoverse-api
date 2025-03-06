@@ -323,13 +323,13 @@
 							}
 						],
 						"url": {
-							"raw": "{{BASE_URL}}/v1/profile",
+							"raw": "{{BASE_URL}}/v1/profiles",
 							"host": [
 								"{{BASE_URL}}"
 							],
 							"path": [
 								"v1",
-								"profile"
+								"profiles"
 							]
 						}
 					},
@@ -366,13 +366,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{BASE_URL}}/v1/profile",
+							"raw": "{{BASE_URL}}/v1/profiles",
 							"host": [
 								"{{BASE_URL}}"
 							],
 							"path": [
 								"v1",
-								"profile"
+								"profiles"
 							]
 						}
 					},

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/fauzancodes/videoverse-api/app/dto"
@@ -17,7 +18,7 @@ import (
 func Register(c *gin.Context) {
 	var request dto.RegisterRequest
 	if err := c.Bind(&request); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusUnprocessableEntity,
 			dto.Response{
 				Status:  http.StatusUnprocessableEntity,
@@ -25,10 +26,11 @@ func Register(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	if err := request.Validate(); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusBadRequest,
 			dto.Response{
 				Status:  http.StatusBadRequest,
@@ -36,12 +38,13 @@ func Register(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	param := utils.PopulatePaging(c, "")
 	_, check, _, _ := service.GetUsers(request.Email, param, []string{})
 	if len(check) > 0 {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusBadRequest,
 			dto.Response{
 				Status:  http.StatusBadRequest,
@@ -49,6 +52,7 @@ func Register(c *gin.Context) {
 				Error:   "",
 			},
 		)
+		return
 	}
 
 	result, statusCode, err := service.CreateUser(dto.UserRequest{
@@ -56,7 +60,7 @@ func Register(c *gin.Context) {
 		Password: request.Password,
 	})
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -64,6 +68,7 @@ func Register(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	if request.Firstname != "" || request.Lastname != "" || request.Gender != "" {
@@ -73,7 +78,7 @@ func Register(c *gin.Context) {
 			Gender:    request.Gender,
 		})
 		if err != nil {
-			c.AbortWithStatusJSON(
+			c.JSON(
 				statusCode,
 				dto.Response{
 					Status:  statusCode,
@@ -81,6 +86,7 @@ func Register(c *gin.Context) {
 					Error:   err.Error(),
 				},
 			)
+			return
 		}
 		result.Profile = &profile
 	}
@@ -100,7 +106,7 @@ func Register(c *gin.Context) {
 func Login(c *gin.Context) {
 	var request dto.LoginRequest
 	if err := c.Bind(&request); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusUnprocessableEntity,
 			dto.Response{
 				Status:  http.StatusUnprocessableEntity,
@@ -108,10 +114,11 @@ func Login(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	if err := request.Validate(); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusBadRequest,
 			dto.Response{
 				Status:  http.StatusBadRequest,
@@ -119,23 +126,25 @@ func Login(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	param := utils.PopulatePaging(c, "")
 	_, user, statusCode, _ := service.GetUsers(request.Email, param, []string{})
 	if len(user) == 0 {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
 				Message: "Email not found",
 			},
 		)
+		return
 	}
 
 	err := bcrypt.VerifyPassword(request.Password, user[0].Password)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusBadRequest,
 			dto.Response{
 				Status:  http.StatusBadRequest,
@@ -143,6 +152,7 @@ func Login(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	claims := jwt.MapClaims{}
@@ -151,7 +161,7 @@ func Login(c *gin.Context) {
 
 	token, err := webToken.GenerateToken(&claims)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusUnauthorized,
 			dto.Response{
 				Status:  401,
@@ -159,6 +169,7 @@ func Login(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	c.JSON(
@@ -174,7 +185,7 @@ func Login(c *gin.Context) {
 func GetCurrentUser(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -182,11 +193,19 @@ func GetCurrentUser(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
-	data, statusCode, err := service.GetUserByID(userID, []string{"Profile", "Profile.SocialMedia"})
+	withVideos, _ := strconv.ParseBool(c.Query("with_videos"))
+
+	preloadFields := []string{"Profile", "Profile.SocialMedia"}
+	if withVideos {
+		preloadFields = append(preloadFields, "Videos", "VideoCategories", "Playlist")
+	}
+
+	data, statusCode, err := service.GetUserByID(userID, preloadFields)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -194,6 +213,7 @@ func GetCurrentUser(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	c.JSON(
@@ -209,7 +229,7 @@ func GetCurrentUser(c *gin.Context) {
 func UpdateAccount(c *gin.Context) {
 	var request dto.UserRequest
 	if err := c.Bind(&request); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusUnprocessableEntity,
 			dto.Response{
 				Status:  http.StatusUnprocessableEntity,
@@ -217,11 +237,12 @@ func UpdateAccount(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -229,11 +250,12 @@ func UpdateAccount(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	data, statusCode, err := service.UpdateUser(userID, request)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -241,6 +263,7 @@ func UpdateAccount(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	c.JSON(
@@ -256,7 +279,7 @@ func UpdateAccount(c *gin.Context) {
 func DeleteAccount(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -264,11 +287,12 @@ func DeleteAccount(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	statusCode, err = service.DeleteUser(userID)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -276,6 +300,7 @@ func DeleteAccount(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	c.JSON(
@@ -298,7 +323,7 @@ func VerifyUser(c *gin.Context) {
 			return
 		}
 
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusNotFound,
 			dto.Response{
 				Status:  500,
@@ -306,6 +331,7 @@ func VerifyUser(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	if successUrl != "" {
@@ -327,7 +353,7 @@ func VerifyUser(c *gin.Context) {
 func ResendEmailVerification(c *gin.Context) {
 	var request dto.ResendEmailVerification
 	if err := c.Bind(&request); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusUnprocessableEntity,
 			dto.Response{
 				Status:  http.StatusUnprocessableEntity,
@@ -335,10 +361,11 @@ func ResendEmailVerification(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	if err := request.Validate(); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusBadRequest,
 			dto.Response{
 				Status:  http.StatusBadRequest,
@@ -346,14 +373,15 @@ func ResendEmailVerification(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	user, _, _, err := repository.GetUsers(dto.FindParameter{
 		Filter:       "deleted_at IS NULL AND email = ?",
 		FilterValues: []any{request.Email},
-	}, []string{})
+	}, []string{"Profile"})
 	if err != nil || len(user) == 0 {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusNotFound,
 			dto.Response{
 				Status:  404,
@@ -361,16 +389,18 @@ func ResendEmailVerification(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	if user[0].IsVerified {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusBadRequest,
 			dto.Response{
 				Status:  http.StatusBadRequest,
 				Message: "User has been verified",
 			},
 		)
+		return
 	}
 
 	go service.SendEmailVerification(user[0], request.SuccessVerificationUrl, request.FailedVerificationUrl, utils.GetBaseUrl(c))
@@ -387,7 +417,7 @@ func ResendEmailVerification(c *gin.Context) {
 func SendForgotPasswordRequest(c *gin.Context) {
 	var request dto.SendForgotPasswordRequest
 	if err := c.Bind(&request); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusUnprocessableEntity,
 			dto.Response{
 				Status:  http.StatusUnprocessableEntity,
@@ -395,10 +425,11 @@ func SendForgotPasswordRequest(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	if err := request.Validate(); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusBadRequest,
 			dto.Response{
 				Status:  http.StatusBadRequest,
@@ -406,6 +437,7 @@ func SendForgotPasswordRequest(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	user, _, _, err := repository.GetUsers(dto.FindParameter{
@@ -413,7 +445,7 @@ func SendForgotPasswordRequest(c *gin.Context) {
 		FilterValues: []any{request.Email},
 	}, []string{})
 	if err != nil || len(user) == 0 {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusNotFound,
 			dto.Response{
 				Status:  404,
@@ -421,6 +453,7 @@ func SendForgotPasswordRequest(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	go service.SendResetPasswordRequest(user[0], request.RedirectUrl, utils.GetBaseUrl(c))
@@ -450,7 +483,7 @@ func SendResetPasswordRequestInstruction(c *gin.Context) {
 func ResetPassword(c *gin.Context) {
 	var request dto.ResetPasswordRequest
 	if err := c.Bind(&request); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusUnprocessableEntity,
 			dto.Response{
 				Status:  http.StatusUnprocessableEntity,
@@ -458,10 +491,11 @@ func ResetPassword(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	if err := request.Validate(); err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			http.StatusBadRequest,
 			dto.Response{
 				Status:  http.StatusBadRequest,
@@ -469,11 +503,12 @@ func ResetPassword(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	data, statusCode, err := service.ResetPassword(request)
 	if err != nil {
-		c.AbortWithStatusJSON(
+		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
@@ -481,6 +516,7 @@ func ResetPassword(c *gin.Context) {
 				Error:   err.Error(),
 			},
 		)
+		return
 	}
 
 	c.JSON(

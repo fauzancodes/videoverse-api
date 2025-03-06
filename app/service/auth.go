@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/fauzancodes/videoverse-api/app/dto"
@@ -30,8 +31,13 @@ func SendEmailVerification(user models.VAUser, successUrl, failedUrl, appUrl str
 
 	verificationUrl := fmt.Sprintf("%v/v1/auth/email-verification/%v", appUrl, token)
 
+	name := fmt.Sprintf("%s %s", user.Profile.Firstname, user.Profile.Lastname)
+	if strings.ReplaceAll(name, " ", "") == "" {
+		name = user.Email
+	}
+
 	fill := dto.EmailVerfication{
-		Name:            user.Email,
+		Name:            name,
 		AppUrl:          appUrl,
 		VerificationUrl: verificationUrl,
 	}
@@ -46,13 +52,13 @@ func VerifyUser(token string) (user models.VAUser, successUrl, failedUrl string,
 	}
 
 	claims, err := webToken.DecodeToken(token)
+	successUrl = claims["successUrl"].(string)
+	failedUrl = claims["failedUrl"].(string)
+
 	if err != nil {
 		log.Println(err.Error())
 		return
 	}
-
-	successUrl = claims["successUrl"].(string)
-	failedUrl = claims["failedUrl"].(string)
 
 	userID := claims["id"].(string)
 	user, _, err = GetUserByID(userID, []string{})
@@ -74,7 +80,7 @@ func VerifyUser(token string) (user models.VAUser, successUrl, failedUrl string,
 func SendResetPasswordRequest(user models.VAUser, redirectUrl, appUrl string) {
 	claims := jwt.MapClaims{}
 	claims["id"] = user.ID
-	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
 	claims["redirectUrl"] = redirectUrl
 	token, err := webToken.GenerateToken(&claims)
 	if err != nil {
@@ -89,8 +95,13 @@ func SendResetPasswordRequest(user models.VAUser, redirectUrl, appUrl string) {
 		resetPasswordUrl = fmt.Sprintf("%v/v1/auth/reset-password/instruction/%v", appUrl, token)
 	}
 
+	name := fmt.Sprintf("%s %s", user.Profile.Firstname, user.Profile.Lastname)
+	if strings.ReplaceAll(name, " ", "") == "" {
+		name = user.Email
+	}
+
 	fill := dto.ResetPassword{
-		Name:             user.Email,
+		Name:             name,
 		AppUrl:           appUrl,
 		ResetPasswordUrl: resetPasswordUrl,
 	}

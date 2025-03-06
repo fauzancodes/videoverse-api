@@ -8,29 +8,29 @@ import (
 )
 
 type PagingRequest struct {
-	Page   int         `default:"1"`
-	Search string      `default:""`
-	Limit  int         `default:"10"`
-	Offset int         `default:"0"`
-	Order  string      `default:"created_at DESC"`
-	Custom interface{} `default:""`
+	Page   int    `default:"1"`
+	Search string `default:""`
+	Limit  int    `default:"10"`
+	Offset int    `default:"0"`
+	Order  string `default:"created_at DESC"`
+	Custom any    `default:""`
 }
 
 type PagingResponse struct {
-	Total         int         `json:"total"`
-	TotalFiltered int         `json:"total_filtered"`
-	Error         string      `json:"error"`
-	Status        int         `default:"200" json:"status"`
-	Messages      string      `default:"Success" json:"message"`
-	Data          interface{} `default:"[]" json:"data"`
-	Search        string      `default:"" json:"search"`
-	Next          bool        `default:"false" json:"next"`
-	Back          bool        `default:"false" json:"back"`
-	Limit         int         `default:"10" json:"limit"`
-	Offset        int         `default:"0" json:"offset"`
-	TotalPage     int         `default:"0" json:"total_page"`
-	CurrentPage   int         `default:"1" json:"current_page"`
-	Order         string      `default:"created_at DESC" json:"order"`
+	Total         int    `json:"total"`
+	TotalFiltered int    `json:"total_filtered"`
+	Error         string `json:"error"`
+	Status        int    `default:"200" json:"status"`
+	Messages      string `default:"Success" json:"message"`
+	Data          any    `default:"[]" json:"data"`
+	Search        string `default:"" json:"search"`
+	Next          bool   `default:"false" json:"next"`
+	Back          bool   `default:"false" json:"back"`
+	Limit         int    `default:"10" json:"limit"`
+	Offset        int    `default:"0" json:"offset"`
+	TotalPage     int    `default:"0" json:"total_page"`
+	CurrentPage   int    `default:"1" json:"current_page"`
+	Order         string `default:"created_at DESC" json:"order"`
 }
 
 func PopulatePaging(c *gin.Context, custom string) (param PagingRequest) {
@@ -75,7 +75,7 @@ func PopulatePaging(c *gin.Context, custom string) (param PagingRequest) {
 	return
 }
 
-func PopulateResPaging(param *PagingRequest, data interface{}, totalResult int64, totalFiltered int64) (output PagingResponse) {
+func PopulateResPaging(param *PagingRequest, data any, totalResult int64, totalFiltered int64) (output PagingResponse) {
 	totalPages := int(totalFiltered) / param.Limit
 	if int(totalFiltered)%param.Limit > 0 {
 		totalPages++

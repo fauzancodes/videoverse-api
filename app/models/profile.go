@@ -1,12 +1,16 @@
 package models
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+	"github.com/guregu/null"
+)
 
 type VAProfile struct {
 	CustomGormModel
 	Firstname   string          `json:"firstname" gorm:"type:varchar(255);column:firstname"`
 	Lastname    string          `json:"lastname" gorm:"type:varchar(255);column:lastname"`
 	Gender      string          `json:"gender" gorm:"type:varchar(50);column:gender"`
+	DateOfBirth null.Time       `json:"date_of_birth" gorm:"type:timestamptz;column:date_of_birth"`
 	Picture     string          `json:"picture" gorm:"type:text;column:picture"`
 	Description string          `json:"description" gorm:"type:text;column:description"`
 	Location    string          `json:"location" gorm:"type:text;column:location"`
