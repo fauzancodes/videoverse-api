@@ -9,6 +9,8 @@ type VAUser struct {
 	Videos          []VAVideo         `json:"videos,omitempty" gorm:"foreignKey:UserID"`
 	VideoCategories []VAVideoCategory `json:"video_categories,omitempty" gorm:"foreignKey:UserID"`
 	Playlists       []VAPlaylist      `json:"playlists,omitempty" gorm:"foreignKey:UserID"`
+	LikedVideos     []VAVideoLike     `json:"liked_videos,omitempty" gorm:"foreignKey:UserID"`
+	DislikedVideos  []VAVideoDislike  `json:"disliked_videos,omitempty" gorm:"foreignKey:UserID"`
 }
 
 func (VAUser) TableName() string {

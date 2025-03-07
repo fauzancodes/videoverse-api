@@ -1,0 +1,262 @@
+package service
+
+import (
+	"errors"
+	"net/http"
+	"strings"
+
+	"github.com/fauzancodes/videoverse-api/app/dto"
+	"github.com/fauzancodes/videoverse-api/app/models"
+	"github.com/fauzancodes/videoverse-api/app/pkg/utils"
+	"github.com/fauzancodes/videoverse-api/app/repository"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
+
+func CreateVideoLike(userID string, request dto.VideoLikeRequest) (response models.VAVideoLike, statusCode int, err error) {
+	parsedUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		err = errors.New("failed to parse user UUID: " + err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+	parsedVideoUUID, err := uuid.Parse(request.VideoID)
+	if err != nil {
+		err = errors.New("failed to parse video UUID: " + err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	checkData, _, _, _ := repository.GetVideoLikes(dto.FindParameter{
+		Filter:       "deleted_at IS NULL AND video_id = ? AND user_id = ?",
+		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
+	}, []string{})
+	if len(checkData) > 0 {
+		err = errors.New("this video has been liked")
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	data := models.VAVideoLike{
+		VideoID: parsedVideoUUID,
+		UserID:  parsedUserUUID,
+	}
+
+	response, err = repository.CreateVideoLike(data)
+	if err != nil {
+		err = errors.New("failed to create data: " + err.Error())
+		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	statusCode = http.StatusCreated
+	return
+}
+
+func GetVideoLikes(videoID, userID string, param utils.PagingRequest, preloadFields []string) (response utils.PagingResponse, data []models.VAVideoLike, statusCode int, err error) {
+	baseFilter := "deleted_at IS NULL"
+	filter := baseFilter
+	var filterValues []any
+
+	if userID != "" {
+		filter += " AND user_id = ?"
+		filterValues = append(filterValues, userID)
+	}
+	if videoID != "" {
+		filter += " AND video_id = ?"
+		filterValues = append(filterValues, videoID)
+	}
+
+	data, total, totalFiltered, err := repository.GetVideoLikes(dto.FindParameter{
+		BaseFilter:   baseFilter,
+		Filter:       filter,
+		FilterValues: filterValues,
+		Limit:        param.Limit,
+		Order:        param.Order,
+		Offset:       param.Offset,
+	}, preloadFields)
+	if err != nil {
+		err = errors.New("failed to get data: " + err.Error())
+		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
+			statusCode = http.StatusNotFound
+			return
+		}
+
+		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	response = utils.PopulateResPaging(&param, data, total, totalFiltered)
+
+	statusCode = http.StatusOK
+	return
+}
+
+func DeleteVideoLike(videoID, userID string) (statusCode int, err error) {
+	parsedUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		err = errors.New("failed to parse user UUID: " + err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+	parsedVideoUUID, err := uuid.Parse(videoID)
+	if err != nil {
+		err = errors.New("failed to parse video UUID: " + err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	data, _, _, err := repository.GetVideoLikes(dto.FindParameter{
+		Filter:       "deleted_at IS NULL AND video_id = ? AND user_id = ?",
+		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
+	}, []string{})
+	if err != nil {
+		err = errors.New("failed to get data: " + err.Error())
+		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
+			statusCode = http.StatusNotFound
+			return
+		}
+
+		statusCode = http.StatusInternalServerError
+		return
+	}
+	if len(data) == 0 {
+		err = errors.New("failed to get data: data not found")
+		statusCode = http.StatusNotFound
+		return
+	}
+
+	err = repository.DeleteVideoLike(data[0])
+	if err != nil {
+		err = errors.New("failed to delete data: " + err.Error())
+		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	statusCode = http.StatusOK
+	return
+}
+
+func CreateVideoDislike(userID string, request dto.VideoDislikeRequest) (response models.VAVideoDislike, statusCode int, err error) {
+	parsedUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		err = errors.New("failed to parse user UUID: " + err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+	parsedVideoUUID, err := uuid.Parse(request.VideoID)
+	if err != nil {
+		err = errors.New("failed to parse video UUID: " + err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	checkData, _, _, _ := repository.GetVideoDislikes(dto.FindParameter{
+		Filter:       "deleted_at IS NULL AND video_id = ? AND user_id = ?",
+		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
+	}, []string{})
+	if len(checkData) > 0 {
+		err = errors.New("this video has been liked")
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	data := models.VAVideoDislike{
+		VideoID: parsedVideoUUID,
+		UserID:  parsedUserUUID,
+	}
+
+	response, err = repository.CreateVideoDislike(data)
+	if err != nil {
+		err = errors.New("failed to create data: " + err.Error())
+		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	statusCode = http.StatusCreated
+	return
+}
+
+func GetVideoDislikes(videoID, userID string, param utils.PagingRequest, preloadFields []string) (response utils.PagingResponse, data []models.VAVideoDislike, statusCode int, err error) {
+	baseFilter := "deleted_at IS NULL"
+	filter := baseFilter
+	var filterValues []any
+
+	if userID != "" {
+		filter += " AND user_id = ?"
+		filterValues = append(filterValues, userID)
+	}
+	if videoID != "" {
+		filter += " AND video_id = ?"
+		filterValues = append(filterValues, videoID)
+	}
+
+	data, total, totalFiltered, err := repository.GetVideoDislikes(dto.FindParameter{
+		BaseFilter:   baseFilter,
+		Filter:       filter,
+		FilterValues: filterValues,
+		Limit:        param.Limit,
+		Order:        param.Order,
+		Offset:       param.Offset,
+	}, preloadFields)
+	if err != nil {
+		err = errors.New("failed to get data: " + err.Error())
+		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
+			statusCode = http.StatusNotFound
+			return
+		}
+
+		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	response = utils.PopulateResPaging(&param, data, total, totalFiltered)
+
+	statusCode = http.StatusOK
+	return
+}
+
+func DeleteVideoDislike(videoID, userID string) (statusCode int, err error) {
+	parsedUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		err = errors.New("failed to parse user UUID: " + err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+	parsedVideoUUID, err := uuid.Parse(videoID)
+	if err != nil {
+		err = errors.New("failed to parse video UUID: " + err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	data, _, _, err := repository.GetVideoDislikes(dto.FindParameter{
+		Filter:       "deleted_at IS NULL AND video_id = ? AND user_id = ?",
+		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
+	}, []string{})
+	if err != nil {
+		err = errors.New("failed to get data: " + err.Error())
+		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
+			statusCode = http.StatusNotFound
+			return
+		}
+
+		statusCode = http.StatusInternalServerError
+		return
+	}
+	if len(data) == 0 {
+		err = errors.New("failed to get data: data not found")
+		statusCode = http.StatusNotFound
+		return
+	}
+
+	err = repository.DeleteVideoDislike(data[0])
+	if err != nil {
+		err = errors.New("failed to delete data: " + err.Error())
+		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	statusCode = http.StatusOK
+	return
+}

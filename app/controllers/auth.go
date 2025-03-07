@@ -197,10 +197,14 @@ func GetCurrentUser(c *gin.Context) {
 	}
 
 	withVideos, _ := strconv.ParseBool(c.Query("with_videos"))
+	withReactions, _ := strconv.ParseBool(c.Query("with_reactions"))
 
 	preloadFields := []string{"Profile", "Profile.SocialMedia"}
 	if withVideos {
 		preloadFields = append(preloadFields, "Videos", "VideoCategories", "Playlist")
+	}
+	if withReactions {
+		preloadFields = append(preloadFields, "LikedVideos", "DislikedVideos", "LikedVideos.Video", "DislikedVideos.Video")
 	}
 
 	data, statusCode, err := service.GetUserByID(userID, preloadFields)

@@ -38,5 +38,19 @@ func VideoRoute(api *gin.RouterGroup) {
 			playlist.PATCH("/:id", middlewares.Auth(), controllers.UpdatePlaylist)
 			playlist.DELETE("/:id", middlewares.Auth(), controllers.DeletePlaylist)
 		}
+
+		likes := videos.Group("/likes")
+		{
+			likes.POST("", middlewares.Auth(), controllers.CreateVideoLike)
+			likes.GET("", controllers.GetVideoLikes)
+			likes.DELETE("", middlewares.Auth(), controllers.DeleteVideoLike)
+		}
+
+		dislikes := videos.Group("/dislikes")
+		{
+			dislikes.POST("", middlewares.Auth(), controllers.CreateVideoDislike)
+			dislikes.GET("", controllers.GetVideoDislikes)
+			dislikes.DELETE("", middlewares.Auth(), controllers.DeleteVideoDislike)
+		}
 	}
 }
