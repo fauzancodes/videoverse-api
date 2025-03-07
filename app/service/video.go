@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -18,20 +17,20 @@ import (
 func CreateVideo(userID string, request dto.VideoRequest) (response models.VAVideo, statusCode int, err error) {
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
-		err = errors.New("failed to parse user UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 	parsedCategoryUUID, err := uuid.Parse(request.CategoryID)
 	if err != nil {
-		err = errors.New("failed to parse category UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse category UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	tags, err := json.Marshal(request.Tags)
 	if err != nil {
-		err = errors.New("failed to marshal tags: " + err.Error())
+		err = fmt.Errorf("failed to marshal tags: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -50,7 +49,7 @@ func CreateVideo(userID string, request dto.VideoRequest) (response models.VAVid
 
 	response, err = repository.CreateVideo(data)
 	if err != nil {
-		err = errors.New("failed to create data: " + err.Error())
+		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -62,14 +61,14 @@ func CreateVideo(userID string, request dto.VideoRequest) (response models.VAVid
 func GetVideoByID(id string, preloadFields []string) (data models.VAVideo, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err = repository.GetVideoByID(parsedUUID, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -120,7 +119,7 @@ func GetVideos(visibility, categoryID, userID string, param utils.PagingRequest,
 		Offset:           param.Offset,
 	}, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -139,14 +138,14 @@ func GetVideos(visibility, categoryID, userID string, param utils.PagingRequest,
 func UpdateVideo(id string, request dto.VideoRequest) (response models.VAVideo, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err := repository.GetVideoByID(parsedUUID, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -166,7 +165,7 @@ func UpdateVideo(id string, request dto.VideoRequest) (response models.VAVideo, 
 		var parsedCategoryUUID uuid.UUID
 		parsedCategoryUUID, err = uuid.Parse(request.CategoryID)
 		if err != nil {
-			err = errors.New("failed to parse category UUID: " + err.Error())
+			err = fmt.Errorf("failed to parse category UUID: %s", err.Error())
 			statusCode = http.StatusBadRequest
 			return
 		}
@@ -185,7 +184,7 @@ func UpdateVideo(id string, request dto.VideoRequest) (response models.VAVideo, 
 		var tags []byte
 		tags, err = json.Marshal(request.Tags)
 		if err != nil {
-			err = errors.New("failed to marshal tags: " + err.Error())
+			err = fmt.Errorf("failed to marshal tags: %s", err.Error())
 			statusCode = http.StatusBadRequest
 			return
 		}
@@ -195,7 +194,7 @@ func UpdateVideo(id string, request dto.VideoRequest) (response models.VAVideo, 
 
 	response, err = repository.UpdateVideo(data)
 	if err != nil {
-		err = errors.New("failed to update data: " + err.Error())
+		err = fmt.Errorf("failed to update data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -207,14 +206,14 @@ func UpdateVideo(id string, request dto.VideoRequest) (response models.VAVideo, 
 func DeleteVideo(id string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err := repository.GetVideoByID(parsedUUID, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -226,7 +225,7 @@ func DeleteVideo(id string) (statusCode int, err error) {
 
 	err = repository.DeleteVideo(data)
 	if err != nil {
-		err = errors.New("failed to delete data: " + err.Error())
+		err = fmt.Errorf("failed to delete data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -238,7 +237,7 @@ func DeleteVideo(id string) (statusCode int, err error) {
 func CreateVideoCategory(userID string, request dto.VideoCategoryRequest) (response models.VAVideoCategory, statusCode int, err error) {
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
-		err = errors.New("failed to parse user UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -252,7 +251,7 @@ func CreateVideoCategory(userID string, request dto.VideoCategoryRequest) (respo
 
 	response, err = repository.CreateVideoCategory(data)
 	if err != nil {
-		err = errors.New("failed to create data: " + err.Error())
+		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -264,14 +263,14 @@ func CreateVideoCategory(userID string, request dto.VideoCategoryRequest) (respo
 func GetVideoCategoryByID(id string, preloadFields []string) (data models.VAVideoCategory, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err = repository.GetVideoCategoryByID(parsedUUID, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -314,7 +313,7 @@ func GetVideoCategories(userID string, param utils.PagingRequest, preloadFields 
 		Offset:           param.Offset,
 	}, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -333,14 +332,14 @@ func GetVideoCategories(userID string, param utils.PagingRequest, preloadFields 
 func UpdateVideoCategory(id string, request dto.VideoCategoryRequest) (response models.VAVideoCategory, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err := repository.GetVideoCategoryByID(parsedUUID, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -360,7 +359,7 @@ func UpdateVideoCategory(id string, request dto.VideoCategoryRequest) (response 
 
 	response, err = repository.UpdateVideoCategory(data)
 	if err != nil {
-		err = errors.New("failed to update data: " + err.Error())
+		err = fmt.Errorf("failed to update data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -372,14 +371,14 @@ func UpdateVideoCategory(id string, request dto.VideoCategoryRequest) (response 
 func DeleteVideoCategory(id string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err := repository.GetVideoCategoryByID(parsedUUID, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -391,7 +390,7 @@ func DeleteVideoCategory(id string) (statusCode int, err error) {
 
 	err = repository.DeleteVideoCategory(data)
 	if err != nil {
-		err = errors.New("failed to delete data: " + err.Error())
+		err = fmt.Errorf("failed to delete data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}

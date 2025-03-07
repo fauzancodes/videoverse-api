@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -23,7 +22,7 @@ func CreateUser(request dto.UserRequest) (response models.VAUser, statusCode int
 
 	response, err = repository.CreateUser(data)
 	if err != nil {
-		err = errors.New("failed to create data: " + err.Error())
+		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -35,13 +34,13 @@ func CreateUser(request dto.UserRequest) (response models.VAUser, statusCode int
 func GetUserByID(id string, preloadFields []string) (data models.VAUser, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 	data, err = repository.GetUserByID(parsedUUID, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -78,7 +77,7 @@ func GetUsers(email string, param utils.PagingRequest, preloadFields []string) (
 		Offset:       param.Offset,
 	}, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -97,13 +96,13 @@ func GetUsers(email string, param utils.PagingRequest, preloadFields []string) (
 func UpdateUser(id string, request dto.UserRequest) (response models.VAUser, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 	data, err := repository.GetUserByID(parsedUUID, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -122,7 +121,7 @@ func UpdateUser(id string, request dto.UserRequest) (response models.VAUser, sta
 
 	response, err = repository.UpdateUser(data)
 	if err != nil {
-		err = errors.New("failed to update data: " + err.Error())
+		err = fmt.Errorf("failed to update data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -134,14 +133,14 @@ func UpdateUser(id string, request dto.UserRequest) (response models.VAUser, sta
 func DeleteUser(id string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err := repository.GetUserByID(parsedUUID, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -153,7 +152,7 @@ func DeleteUser(id string) (statusCode int, err error) {
 
 	err = repository.DeleteUser(data)
 	if err != nil {
-		err = errors.New("failed to delete data: " + err.Error())
+		err = fmt.Errorf("failed to delete data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}

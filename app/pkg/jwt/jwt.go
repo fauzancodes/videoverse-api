@@ -18,7 +18,7 @@ func GenerateToken(claims *jwt.MapClaims) (string, error) {
 	//then combine the encoded header, payload and signature
 	webtoken, err := token.SignedString([]byte(SecretKey))
 	if err != nil {
-		err = errors.New("failed to generate token: " + err.Error())
+		err = fmt.Errorf("failed to generate token: %s", err.Error())
 		return "", err
 	}
 
@@ -34,7 +34,7 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 		return []byte(SecretKey), nil
 	})
 	if err != nil {
-		err = errors.New("failed to verify token: " + err.Error())
+		err = fmt.Errorf("failed to verify token: %s", err.Error())
 		return token, err
 	}
 
@@ -50,7 +50,7 @@ func DecodeToken(tokenString string) (jwt.MapClaims, error) {
 		return claims, err
 	}
 	if err != nil {
-		err = errors.New("failed to decode token: " + err.Error())
+		err = fmt.Errorf("failed to decode token: %s", err.Error())
 		return claims, err
 	}
 

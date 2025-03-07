@@ -3,7 +3,6 @@ package upload
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -25,7 +24,7 @@ func UploadFile(file any, folder string, filename string) (secureUrl, publicID, 
 		PublicID: filename,
 	})
 	if err != nil {
-		err = errors.New("failed to upload file to cloudinary: " + err.Error())
+		err = fmt.Errorf("failed to upload file to cloudinary: %s", err.Error())
 		return
 	}
 
@@ -43,14 +42,14 @@ func InitBackbalze(ctx context.Context) (bucket *b2.Bucket, statusCode int, err 
 	b2, err := b2.NewClient(ctx, keyID, applicationKey)
 	if err != nil {
 		statusCode = http.StatusInternalServerError
-		err = errors.New("Failed to connect to Backblaze: " + err.Error())
+		err = fmt.Errorf("failed to connect to Backblaze: %s", err.Error())
 		return
 	}
 
 	bucket, err = b2.Bucket(ctx, bucketName)
 	if err != nil {
 		statusCode = http.StatusNotFound
-		err = errors.New("Backblaze bucket not found: " + err.Error())
+		err = fmt.Errorf("backblaze bucket not found: %s", err.Error())
 		return
 	}
 
@@ -64,7 +63,7 @@ func GetRemoteFile(filename string) (buf bytes.Buffer, statusCode int, err error
 	bucket, statusCode, err := InitBackbalze(ctx)
 	if err != nil {
 		statusCode = http.StatusNotFound
-		err = errors.New("failed to initialize Backblaze: " + err.Error())
+		err = fmt.Errorf("failed to initialize Backblaze: %s", err.Error())
 		return
 	}
 
@@ -73,7 +72,7 @@ func GetRemoteFile(filename string) (buf bytes.Buffer, statusCode int, err error
 	_, err = io.Copy(&buf, reader)
 	if err != nil {
 		statusCode = http.StatusNotFound
-		err = errors.New("failed to read file: " + err.Error())
+		err = fmt.Errorf("failed to read file: %s", err.Error())
 		return
 	}
 
@@ -87,7 +86,7 @@ func WriteRemoteFile(file bytes.Buffer, filename string) (statusCode int, err er
 	bucket, statusCode, err := InitBackbalze(ctx)
 	if err != nil {
 		statusCode = http.StatusNotFound
-		err = errors.New("failed to initialize Backblaze: " + err.Error())
+		err = fmt.Errorf("failed to initialize Backblaze: %s", err.Error())
 		return
 	}
 
@@ -96,7 +95,7 @@ func WriteRemoteFile(file bytes.Buffer, filename string) (statusCode int, err er
 	obj := bucket.Object(folder + filename)
 	if _, err = obj.Attrs(ctx); err == nil {
 		if err = obj.Delete(ctx); err != nil {
-			err = errors.New("Failed to delete existing file in Backblaze: " + err.Error())
+			err = fmt.Errorf("failed to delete existing file in backblaze: %s", err.Error())
 			return
 		}
 	}
@@ -107,7 +106,7 @@ func WriteRemoteFile(file bytes.Buffer, filename string) (statusCode int, err er
 	if _, err = file.WriteTo(w); err != nil {
 		w.Close()
 		statusCode = http.StatusNotFound
-		err = errors.New("failed to write to backblaze: " + err.Error())
+		err = fmt.Errorf("failed to write to backblaze: %s", err.Error())
 		return
 	}
 

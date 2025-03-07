@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -16,13 +17,13 @@ import (
 func CreateVideoLike(userID string, request dto.VideoLikeRequest) (response models.VAVideoLike, statusCode int, err error) {
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
-		err = errors.New("failed to parse user UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 	parsedVideoUUID, err := uuid.Parse(request.VideoID)
 	if err != nil {
-		err = errors.New("failed to parse video UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse video UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -44,7 +45,7 @@ func CreateVideoLike(userID string, request dto.VideoLikeRequest) (response mode
 
 	response, err = repository.CreateVideoLike(data)
 	if err != nil {
-		err = errors.New("failed to create data: " + err.Error())
+		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -76,7 +77,7 @@ func GetVideoLikes(videoID, userID string, param utils.PagingRequest, preloadFie
 		Offset:       param.Offset,
 	}, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -95,13 +96,13 @@ func GetVideoLikes(videoID, userID string, param utils.PagingRequest, preloadFie
 func DeleteVideoLike(videoID, userID string) (statusCode int, err error) {
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
-		err = errors.New("failed to parse user UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 	parsedVideoUUID, err := uuid.Parse(videoID)
 	if err != nil {
-		err = errors.New("failed to parse video UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse video UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -111,7 +112,7 @@ func DeleteVideoLike(videoID, userID string) (statusCode int, err error) {
 		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
 	}, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -128,7 +129,7 @@ func DeleteVideoLike(videoID, userID string) (statusCode int, err error) {
 
 	err = repository.DeleteVideoLike(data[0])
 	if err != nil {
-		err = errors.New("failed to delete data: " + err.Error())
+		err = fmt.Errorf("failed to delete data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -140,13 +141,13 @@ func DeleteVideoLike(videoID, userID string) (statusCode int, err error) {
 func CreateVideoDislike(userID string, request dto.VideoDislikeRequest) (response models.VAVideoDislike, statusCode int, err error) {
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
-		err = errors.New("failed to parse user UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 	parsedVideoUUID, err := uuid.Parse(request.VideoID)
 	if err != nil {
-		err = errors.New("failed to parse video UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse video UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -156,7 +157,7 @@ func CreateVideoDislike(userID string, request dto.VideoDislikeRequest) (respons
 		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
 	}, []string{})
 	if len(checkData) > 0 {
-		err = errors.New("this video has been liked")
+		err = errors.New("this video has been disliked")
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -168,7 +169,7 @@ func CreateVideoDislike(userID string, request dto.VideoDislikeRequest) (respons
 
 	response, err = repository.CreateVideoDislike(data)
 	if err != nil {
-		err = errors.New("failed to create data: " + err.Error())
+		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -200,7 +201,7 @@ func GetVideoDislikes(videoID, userID string, param utils.PagingRequest, preload
 		Offset:       param.Offset,
 	}, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -219,13 +220,13 @@ func GetVideoDislikes(videoID, userID string, param utils.PagingRequest, preload
 func DeleteVideoDislike(videoID, userID string) (statusCode int, err error) {
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
-		err = errors.New("failed to parse user UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 	parsedVideoUUID, err := uuid.Parse(videoID)
 	if err != nil {
-		err = errors.New("failed to parse video UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse video UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -235,7 +236,7 @@ func DeleteVideoDislike(videoID, userID string) (statusCode int, err error) {
 		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
 	}, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -252,7 +253,7 @@ func DeleteVideoDislike(videoID, userID string) (statusCode int, err error) {
 
 	err = repository.DeleteVideoDislike(data[0])
 	if err != nil {
-		err = errors.New("failed to delete data: " + err.Error())
+		err = fmt.Errorf("failed to delete data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}

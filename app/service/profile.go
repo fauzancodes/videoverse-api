@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -19,7 +18,7 @@ import (
 func CreateProfile(userID string, request dto.ProfileRequest) (response models.VAProfile, statusCode int, err error) {
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
-		err = errors.New("failed to parse user UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -28,7 +27,7 @@ func CreateProfile(userID string, request dto.ProfileRequest) (response models.V
 	if request.DateOfBirth != "" {
 		dateOfBirth, err = time.ParseInLocation(time.DateOnly, request.DateOfBirth, utils.GetTimeLocationAsiaJakarta())
 		if err != nil {
-			err = errors.New("failed to parse date_of_birth: " + err.Error())
+			err = fmt.Errorf("failed to parse date_of_birth: %s", err.Error())
 			statusCode = http.StatusBadRequest
 			return
 		}
@@ -49,7 +48,7 @@ func CreateProfile(userID string, request dto.ProfileRequest) (response models.V
 
 	response, err = repository.CreateProfile(data)
 	if err != nil {
-		err = errors.New("failed to create data: " + err.Error())
+		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -66,7 +65,7 @@ func CreateProfile(userID string, request dto.ProfileRequest) (response models.V
 
 		response.SocialMedia, err = repository.CreateSocialMediaMulti(socialMediaInput)
 		if err != nil {
-			err = errors.New("failed to create social media: " + err.Error())
+			err = fmt.Errorf("failed to create social media: %s", err.Error())
 			statusCode = http.StatusInternalServerError
 			return
 		}
@@ -79,14 +78,14 @@ func CreateProfile(userID string, request dto.ProfileRequest) (response models.V
 func GetProfileByID(id string, preloadFields []string) (data models.VAProfile, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err = repository.GetProfileByID(parsedUUID, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -127,7 +126,7 @@ func GetProfiles(userID, gender string, param utils.PagingRequest, preloadFields
 		Offset:       param.Offset,
 	}, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -146,13 +145,13 @@ func GetProfiles(userID, gender string, param utils.PagingRequest, preloadFields
 func UpdateProfile(id string, request dto.ProfileRequest) (response models.VAProfile, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 	data, err := repository.GetProfileByID(parsedUUID, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -184,7 +183,7 @@ func UpdateProfile(id string, request dto.ProfileRequest) (response models.VAPro
 		var dateOfBirth time.Time
 		dateOfBirth, err = time.ParseInLocation(time.DateOnly, request.DateOfBirth, utils.GetTimeLocationAsiaJakarta())
 		if err != nil {
-			err = errors.New("failed to parse date_of_birth: " + err.Error())
+			err = fmt.Errorf("failed to parse date_of_birth: %s", err.Error())
 			statusCode = http.StatusBadRequest
 			return
 		}
@@ -193,7 +192,7 @@ func UpdateProfile(id string, request dto.ProfileRequest) (response models.VAPro
 
 	response, err = repository.UpdateProfile(data)
 	if err != nil {
-		err = errors.New("failed to update data: " + err.Error())
+		err = fmt.Errorf("failed to update data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -201,7 +200,7 @@ func UpdateProfile(id string, request dto.ProfileRequest) (response models.VAPro
 	if len(request.SocialMedia) > 0 {
 		err = repository.DeleteSocialMediaByProfileID(data.ID)
 		if err != nil {
-			err = errors.New("failed to delete social media data: " + err.Error())
+			err = fmt.Errorf("failed to delete social media data: %s", err.Error())
 			statusCode = http.StatusInternalServerError
 			return
 		}
@@ -217,7 +216,7 @@ func UpdateProfile(id string, request dto.ProfileRequest) (response models.VAPro
 
 		response.SocialMedia, err = repository.CreateSocialMediaMulti(socialMediaInput)
 		if err != nil {
-			err = errors.New("failed to create social media: " + err.Error())
+			err = fmt.Errorf("failed to create social media: %s", err.Error())
 			statusCode = http.StatusInternalServerError
 			return
 		}
@@ -230,14 +229,14 @@ func UpdateProfile(id string, request dto.ProfileRequest) (response models.VAPro
 func DeleteProfile(id string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err := repository.GetProfileByID(parsedUUID, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -249,14 +248,14 @@ func DeleteProfile(id string) (statusCode int, err error) {
 
 	err = repository.DeleteSocialMediaByProfileID(data.ID)
 	if err != nil {
-		err = errors.New("failed to delete social media data: " + err.Error())
+		err = fmt.Errorf("failed to delete social media data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
 
 	err = repository.DeleteProfile(data)
 	if err != nil {
-		err = errors.New("failed to delete data: " + err.Error())
+		err = fmt.Errorf("failed to delete data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}

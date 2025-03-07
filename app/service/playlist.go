@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -17,7 +16,7 @@ import (
 func CreatePlaylist(userID string, request dto.PlaylistRequest) (response models.VAPlaylist, statusCode int, err error) {
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
-		err = errors.New("failed to parse user UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -32,7 +31,7 @@ func CreatePlaylist(userID string, request dto.PlaylistRequest) (response models
 
 	response, err = repository.CreatePlaylist(data)
 	if err != nil {
-		err = errors.New("failed to create data: " + err.Error())
+		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -62,7 +61,7 @@ func AddVideosToPlaylist(videoIDs []string, playlist *models.VAPlaylist) (status
 
 	videos, err := repository.GetVideoByIDs(parsedVideoIDs, []string{})
 	if err != nil {
-		err = errors.New("failed to get videos: " + err.Error())
+		err = fmt.Errorf("failed to get videos: %s", err.Error())
 
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
@@ -75,7 +74,7 @@ func AddVideosToPlaylist(videoIDs []string, playlist *models.VAPlaylist) (status
 
 	err = repository.AddVideosToPlaylist(videos, *playlist)
 	if err != nil {
-		err = errors.New("failed to add videos into playlist: " + err.Error())
+		err = fmt.Errorf("failed to add videos into playlist: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -88,14 +87,14 @@ func AddVideosToPlaylist(videoIDs []string, playlist *models.VAPlaylist) (status
 func GetPlaylistByID(id string, preloadFields []string) (data models.VAPlaylist, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err = repository.GetPlaylistByID(parsedUUID, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -142,7 +141,7 @@ func GetPlaylists(visibility, userID string, param utils.PagingRequest, preloadF
 		Offset:           param.Offset,
 	}, preloadFields)
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -161,14 +160,14 @@ func GetPlaylists(visibility, userID string, param utils.PagingRequest, preloadF
 func UpdatePlaylist(id string, request dto.PlaylistRequest) (response models.VAPlaylist, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err := repository.GetPlaylistByID(parsedUUID, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -191,7 +190,7 @@ func UpdatePlaylist(id string, request dto.PlaylistRequest) (response models.VAP
 
 	response, err = repository.UpdatePlaylist(data)
 	if err != nil {
-		err = errors.New("failed to update data: " + err.Error())
+		err = fmt.Errorf("failed to update data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
@@ -199,7 +198,7 @@ func UpdatePlaylist(id string, request dto.PlaylistRequest) (response models.VAP
 	if len(request.VideoIDs) > 0 {
 		err = repository.ClearVideosFromPlaylist(data)
 		if err != nil {
-			err = errors.New("failed to clear videos in playlist: " + err.Error())
+			err = fmt.Errorf("failed to clear videos in playlist: %s", err.Error())
 			statusCode = http.StatusInternalServerError
 			return
 		}
@@ -217,14 +216,14 @@ func UpdatePlaylist(id string, request dto.PlaylistRequest) (response models.VAP
 func DeletePlaylist(id string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
-		err = errors.New("failed to parse UUID: " + err.Error())
+		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
 	data, err := repository.GetPlaylistByID(parsedUUID, []string{})
 	if err != nil {
-		err = errors.New("failed to get data: " + err.Error())
+		err = fmt.Errorf("failed to get data: %s", err.Error())
 		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
 			statusCode = http.StatusNotFound
 			return
@@ -236,14 +235,14 @@ func DeletePlaylist(id string) (statusCode int, err error) {
 
 	err = repository.ClearVideosFromPlaylist(data)
 	if err != nil {
-		err = errors.New("failed to clear videos in playlist: " + err.Error())
+		err = fmt.Errorf("failed to clear videos in playlist: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
 
 	err = repository.DeletePlaylist(data)
 	if err != nil {
-		err = errors.New("failed to delete data: " + err.Error())
+		err = fmt.Errorf("failed to delete data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}

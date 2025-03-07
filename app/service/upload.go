@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	"fmt"
 	"mime/multipart"
 	"net/http"
 	"path/filepath"
@@ -24,7 +24,7 @@ func Upload(file *multipart.FileHeader, userID string) (responseURL string, stat
 		}
 	}
 	if !isExtensionAllowed {
-		err = errors.New("the file extension is not allowed. allowed file extensions are " + strings.Join(allowedExtensions, ", "))
+		err = fmt.Errorf("the file extension is not allowed. allowed file extensions are %s", strings.Join(allowedExtensions, ", "))
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -32,7 +32,7 @@ func Upload(file *multipart.FileHeader, userID string) (responseURL string, stat
 	var src multipart.File
 	src, err = file.Open()
 	if err != nil {
-		err = errors.New("faield to open file: " + err.Error())
+		err = fmt.Errorf("faield to open file: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}

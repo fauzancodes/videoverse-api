@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"errors"
+	"fmt"
 	"strings"
 
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -24,7 +24,7 @@ func (request PlaylistRequest) Validate() error {
 		}
 	}
 	if !visibilityAccepted {
-		return errors.New("allowed visibilities: " + strings.Join(visibilities, ", "))
+		return fmt.Errorf("allowed visibilities: %s", strings.Join(visibilities, ", "))
 	}
 
 	return validation.ValidateStruct(

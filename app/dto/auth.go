@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"errors"
+	"fmt"
 	"strings"
 
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -52,7 +52,7 @@ func (request RegisterRequest) Validate() error {
 		}
 	}
 	if !genderAccepted {
-		return errors.New("allowed genders: " + strings.Join(genders, ", "))
+		return fmt.Errorf("allowed genders: %s", strings.Join(genders, ", "))
 	}
 
 	return validation.ValidateStruct(
