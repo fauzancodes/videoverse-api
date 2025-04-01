@@ -201,7 +201,7 @@ func GetCurrentUser(c *gin.Context) {
 
 	preloadFields := []string{"Profile", "Profile.SocialMedia"}
 	if withVideos {
-		preloadFields = append(preloadFields, "Videos", "VideoCategories", "Playlist")
+		preloadFields = append(preloadFields, "Videos", "VideoCategories", "Playlists")
 	}
 	if withReactions {
 		preloadFields = append(preloadFields, "LikedVideos", "DislikedVideos", "LikedVideos.Video", "DislikedVideos.Video")

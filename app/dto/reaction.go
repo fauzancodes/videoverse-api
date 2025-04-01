@@ -2,6 +2,7 @@ package dto
 
 import (
 	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 )
 
 type VideoLikeRequest struct {
@@ -11,7 +12,7 @@ type VideoLikeRequest struct {
 func (request VideoLikeRequest) Validate() error {
 	return validation.ValidateStruct(
 		&request,
-		validation.Field(&request.VideoID, validation.Required),
+		validation.Field(&request.VideoID, validation.Required, is.UUID),
 	)
 }
 
@@ -22,6 +23,6 @@ type VideoDislikeRequest struct {
 func (request VideoDislikeRequest) Validate() error {
 	return validation.ValidateStruct(
 		&request,
-		validation.Field(&request.VideoID, validation.Required),
+		validation.Field(&request.VideoID, validation.Required, is.UUID),
 	)
 }

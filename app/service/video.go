@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -135,10 +136,17 @@ func GetVideos(visibility, categoryID, userID string, param utils.PagingRequest,
 	return
 }
 
-func UpdateVideo(id string, request dto.VideoRequest) (response models.VAVideo, statusCode int, err error) {
+func UpdateVideo(id, userID string, request dto.VideoRequest) (response models.VAVideo, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	parsedUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -152,6 +160,12 @@ func UpdateVideo(id string, request dto.VideoRequest) (response models.VAVideo, 
 		}
 
 		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	if *data.UserID != parsedUserUUID {
+		err = errors.New("you are not authorized to update this data")
+		statusCode = http.StatusForbidden
 		return
 	}
 
@@ -203,10 +217,17 @@ func UpdateVideo(id string, request dto.VideoRequest) (response models.VAVideo, 
 	return
 }
 
-func DeleteVideo(id string) (statusCode int, err error) {
+func DeleteVideo(id, userID string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	parsedUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -220,6 +241,12 @@ func DeleteVideo(id string) (statusCode int, err error) {
 		}
 
 		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	if *data.UserID != parsedUserUUID {
+		err = errors.New("you are not authorized to delete this data")
+		statusCode = http.StatusForbidden
 		return
 	}
 
@@ -329,10 +356,17 @@ func GetVideoCategories(userID string, param utils.PagingRequest, preloadFields 
 	return
 }
 
-func UpdateVideoCategory(id string, request dto.VideoCategoryRequest) (response models.VAVideoCategory, statusCode int, err error) {
+func UpdateVideoCategory(id, userID string, request dto.VideoCategoryRequest) (response models.VAVideoCategory, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	parsedUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -346,6 +380,12 @@ func UpdateVideoCategory(id string, request dto.VideoCategoryRequest) (response 
 		}
 
 		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	if *data.UserID != parsedUserUUID {
+		err = errors.New("you are not authorized to update this data")
+		statusCode = http.StatusForbidden
 		return
 	}
 
@@ -368,10 +408,17 @@ func UpdateVideoCategory(id string, request dto.VideoCategoryRequest) (response 
 	return
 }
 
-func DeleteVideoCategory(id string) (statusCode int, err error) {
+func DeleteVideoCategory(id, userID string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	parsedUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -385,6 +432,12 @@ func DeleteVideoCategory(id string) (statusCode int, err error) {
 		}
 
 		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	if *data.UserID != parsedUserUUID {
+		err = errors.New("you are not authorized to delete this data")
+		statusCode = http.StatusForbidden
 		return
 	}
 

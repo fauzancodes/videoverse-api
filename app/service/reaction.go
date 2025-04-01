@@ -28,6 +28,13 @@ func CreateVideoLike(userID string, request dto.VideoLikeRequest) (response mode
 		return
 	}
 
+	_, err = repository.GetVideoByID(parsedVideoUUID, []string{})
+	if err != nil {
+		err = fmt.Errorf("failed to get video: %s", err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
 	checkData, _, _, _ := repository.GetVideoLikes(dto.FindParameter{
 		Filter:       "deleted_at IS NULL AND video_id = ? AND user_id = ?",
 		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
@@ -36,6 +43,24 @@ func CreateVideoLike(userID string, request dto.VideoLikeRequest) (response mode
 		err = errors.New("this video has been liked")
 		statusCode = http.StatusBadRequest
 		return
+	}
+
+	dislikeData, _, _, err := repository.GetVideoDislikes(dto.FindParameter{
+		Filter:       "deleted_at IS NULL AND video_id = ? AND user_id = ?",
+		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
+	}, []string{})
+	if err != nil {
+		err = fmt.Errorf("failed to get data: %s", err.Error())
+		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
+			statusCode = http.StatusNotFound
+			return
+		}
+
+		statusCode = http.StatusInternalServerError
+		return
+	}
+	if len(dislikeData) != 0 {
+		repository.DeleteVideoDislike(dislikeData[0])
 	}
 
 	data := models.VAVideoLike{
@@ -127,6 +152,12 @@ func DeleteVideoLike(videoID, userID string) (statusCode int, err error) {
 		return
 	}
 
+	if data[0].UserID != parsedUserUUID {
+		err = errors.New("you are not authorized to delete this data")
+		statusCode = http.StatusForbidden
+		return
+	}
+
 	err = repository.DeleteVideoLike(data[0])
 	if err != nil {
 		err = fmt.Errorf("failed to delete data: %s", err.Error())
@@ -152,6 +183,13 @@ func CreateVideoDislike(userID string, request dto.VideoDislikeRequest) (respons
 		return
 	}
 
+	_, err = repository.GetVideoByID(parsedVideoUUID, []string{})
+	if err != nil {
+		err = fmt.Errorf("failed to get video: %s", err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
 	checkData, _, _, _ := repository.GetVideoDislikes(dto.FindParameter{
 		Filter:       "deleted_at IS NULL AND video_id = ? AND user_id = ?",
 		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
@@ -160,6 +198,24 @@ func CreateVideoDislike(userID string, request dto.VideoDislikeRequest) (respons
 		err = errors.New("this video has been disliked")
 		statusCode = http.StatusBadRequest
 		return
+	}
+
+	likeData, _, _, err := repository.GetVideoLikes(dto.FindParameter{
+		Filter:       "deleted_at IS NULL AND video_id = ? AND user_id = ?",
+		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
+	}, []string{})
+	if err != nil {
+		err = fmt.Errorf("failed to get data: %s", err.Error())
+		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
+			statusCode = http.StatusNotFound
+			return
+		}
+
+		statusCode = http.StatusInternalServerError
+		return
+	}
+	if len(likeData) != 0 {
+		repository.DeleteVideoLike(likeData[0])
 	}
 
 	data := models.VAVideoDislike{
@@ -248,6 +304,12 @@ func DeleteVideoDislike(videoID, userID string) (statusCode int, err error) {
 	if len(data) == 0 {
 		err = errors.New("failed to get data: data not found")
 		statusCode = http.StatusNotFound
+		return
+	}
+
+	if data[0].UserID != parsedUserUUID {
+		err = errors.New("you are not authorized to delete this data")
+		statusCode = http.StatusForbidden
 		return
 	}
 

@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/fauzancodes/videoverse-api/app/dto"
 	"github.com/fauzancodes/videoverse-api/app/pkg/utils"
@@ -11,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreatePlaylist(c *gin.Context) {
+func CreateComment(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
 		c.JSON(
@@ -25,7 +24,7 @@ func CreatePlaylist(c *gin.Context) {
 		return
 	}
 
-	var request dto.PlaylistRequest
+	var request dto.CommentRequest
 	if err := c.Bind(&request); err != nil {
 		c.JSON(
 			http.StatusUnprocessableEntity,
@@ -50,7 +49,7 @@ func CreatePlaylist(c *gin.Context) {
 		return
 	}
 
-	result, statusCode, err := service.CreatePlaylist(userID, request)
+	result, statusCode, err := service.CreateComment(userID, request)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -73,52 +72,7 @@ func CreatePlaylist(c *gin.Context) {
 	)
 }
 
-func GetPlaylists(c *gin.Context) {
-	userID, statusCode, err := utils.GetCurrentUserID(c)
-	if err != nil {
-		c.JSON(
-			statusCode,
-			dto.Response{
-				Status:  statusCode,
-				Message: "Failed to get current userID",
-				Error:   err.Error(),
-			},
-		)
-		return
-	}
-
-	visibility := c.Query("visibility")
-
-	withUser, _ := strconv.ParseBool(c.Query("with_user"))
-	withVideos, _ := strconv.ParseBool(c.Query("with_videos"))
-
-	var preloadFields []string
-	if withUser {
-		preloadFields = append(preloadFields, "User")
-	}
-	if withVideos {
-		preloadFields = append(preloadFields, "Videos", "Videos.Category")
-	}
-
-	param := utils.PopulatePaging(c, "status")
-	data, _, statusCode, err := service.GetPlaylists(visibility, userID, param, preloadFields)
-	if err != nil {
-		c.JSON(
-			statusCode,
-			dto.Response{
-				Status:  statusCode,
-				Message: "Failed to get data",
-				Error:   err.Error(),
-			},
-		)
-		return
-	}
-
-	c.JSON(statusCode, data)
-}
-
-func GetPublicPlaylists(c *gin.Context) {
-	visibility := "public"
+func GetComments(c *gin.Context) {
 	userID, statusCode, err := utils.QueryParamUUID(c, "user_id")
 	if err != nil {
 		c.JSON(
@@ -131,20 +85,52 @@ func GetPublicPlaylists(c *gin.Context) {
 		)
 		return
 	}
+	videoID, statusCode, err := utils.QueryParamUUID(c, "video_id")
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Invalid parameter",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+	parentID, statusCode, err := utils.QueryParamUUID(c, "parent_id")
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Invalid parameter",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
 
 	withUser, _ := strconv.ParseBool(c.Query("with_user"))
-	withVideos, _ := strconv.ParseBool(c.Query("with_videos"))
+	withVideo, _ := strconv.ParseBool(c.Query("with_video"))
+	withParent, _ := strconv.ParseBool(c.Query("with_parent"))
+	withReplies, _ := strconv.ParseBool(c.Query("with_replies"))
 
 	var preloadFields []string
 	if withUser {
 		preloadFields = append(preloadFields, "User")
 	}
-	if withVideos {
-		preloadFields = append(preloadFields, "Videos", "Videos.Category")
+	if withVideo {
+		preloadFields = append(preloadFields, "Video")
+	}
+	if withParent {
+		preloadFields = append(preloadFields, "Parent")
+	}
+	if withReplies {
+		preloadFields = append(preloadFields, "Replies", "Replies.User")
 	}
 
-	param := utils.PopulatePaging(c, "status")
-	data, _, statusCode, err := service.GetPlaylists(visibility, userID, param, preloadFields)
+	param := utils.PopulatePaging(c, "")
+	data, _, statusCode, err := service.GetComments(parentID, videoID, userID, param, preloadFields)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -160,7 +146,7 @@ func GetPublicPlaylists(c *gin.Context) {
 	c.JSON(statusCode, data)
 }
 
-func GetPlaylistByID(c *gin.Context) {
+func GetCommentByID(c *gin.Context) {
 	id, statusCode, err := utils.ParamUUID(c, "id")
 	if err != nil {
 		c.JSON(
@@ -175,17 +161,25 @@ func GetPlaylistByID(c *gin.Context) {
 	}
 
 	withUser, _ := strconv.ParseBool(c.Query("with_user"))
-	withVideos, _ := strconv.ParseBool(c.Query("with_videos"))
+	withVideo, _ := strconv.ParseBool(c.Query("with_video"))
+	withParent, _ := strconv.ParseBool(c.Query("with_parent"))
+	withReplies, _ := strconv.ParseBool(c.Query("with_replies"))
 
 	var preloadFields []string
 	if withUser {
 		preloadFields = append(preloadFields, "User")
 	}
-	if withVideos {
-		preloadFields = append(preloadFields, "Videos", "Videos.Category")
+	if withVideo {
+		preloadFields = append(preloadFields, "Video")
+	}
+	if withParent {
+		preloadFields = append(preloadFields, "Parent")
+	}
+	if withReplies {
+		preloadFields = append(preloadFields, "Replies", "Replies.User")
 	}
 
-	data, statusCode, err := service.GetPlaylistByID(id, preloadFields)
+	data, statusCode, err := service.GetCommentByID(id, preloadFields)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -208,67 +202,7 @@ func GetPlaylistByID(c *gin.Context) {
 	)
 }
 
-func GetPublicPlaylistByID(c *gin.Context) {
-	id, statusCode, err := utils.ParamUUID(c, "id")
-	if err != nil {
-		c.JSON(
-			statusCode,
-			dto.Response{
-				Status:  statusCode,
-				Message: "Invalid parameter",
-				Error:   err.Error(),
-			},
-		)
-		return
-	}
-
-	withUser, _ := strconv.ParseBool(c.Query("with_user"))
-	withVideos, _ := strconv.ParseBool(c.Query("with_videos"))
-
-	var preloadFields []string
-	if withUser {
-		preloadFields = append(preloadFields, "User")
-	}
-	if withVideos {
-		preloadFields = append(preloadFields, "Videos", "Videos.Category")
-	}
-
-	data, statusCode, err := service.GetPlaylistByID(id, preloadFields)
-	if err != nil {
-		c.JSON(
-			statusCode,
-			dto.Response{
-				Status:  statusCode,
-				Message: "Failed to get data",
-				Error:   err.Error(),
-			},
-		)
-		return
-	}
-
-	if strings.EqualFold(data.Visibility, "private") {
-		c.JSON(
-			http.StatusNotFound,
-			dto.Response{
-				Status:  http.StatusNotFound,
-				Message: "Failed to get data",
-				Error:   "failed to get data",
-			},
-		)
-		return
-	}
-
-	c.JSON(
-		statusCode,
-		dto.Response{
-			Status:  statusCode,
-			Message: "Success to get data",
-			Data:    data,
-		},
-	)
-}
-
-func UpdatePlaylist(c *gin.Context) {
+func UpdateComment(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
 		c.JSON(
@@ -295,7 +229,7 @@ func UpdatePlaylist(c *gin.Context) {
 		return
 	}
 
-	var request dto.PlaylistRequest
+	var request dto.CommentUpdateRequest
 	if err := c.Bind(&request); err != nil {
 		c.JSON(
 			http.StatusUnprocessableEntity,
@@ -320,7 +254,7 @@ func UpdatePlaylist(c *gin.Context) {
 		return
 	}
 
-	data, statusCode, err := service.UpdatePlaylist(id, userID, request)
+	data, statusCode, err := service.UpdateComment(userID, id, request)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -343,7 +277,7 @@ func UpdatePlaylist(c *gin.Context) {
 	)
 }
 
-func DeletePlaylist(c *gin.Context) {
+func DeleteComment(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
 		c.JSON(
@@ -370,7 +304,7 @@ func DeletePlaylist(c *gin.Context) {
 		return
 	}
 
-	statusCode, err = service.DeletePlaylist(id, userID)
+	statusCode, err = service.DeleteComment(userID, id)
 	if err != nil {
 		c.JSON(
 			statusCode,

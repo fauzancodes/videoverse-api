@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -157,10 +158,17 @@ func GetPlaylists(visibility, userID string, param utils.PagingRequest, preloadF
 	return
 }
 
-func UpdatePlaylist(id string, request dto.PlaylistRequest) (response models.VAPlaylist, statusCode int, err error) {
+func UpdatePlaylist(id, userID string, request dto.PlaylistRequest) (response models.VAPlaylist, statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	parsedUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -174,6 +182,12 @@ func UpdatePlaylist(id string, request dto.PlaylistRequest) (response models.VAP
 		}
 
 		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	if *data.UserID != parsedUserUUID {
+		err = errors.New("you are not authorized to update this data")
+		statusCode = http.StatusForbidden
 		return
 	}
 
@@ -213,10 +227,17 @@ func UpdatePlaylist(id string, request dto.PlaylistRequest) (response models.VAP
 	return
 }
 
-func DeletePlaylist(id string) (statusCode int, err error) {
+func DeletePlaylist(id, userID string) (statusCode int, err error) {
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil {
 		err = fmt.Errorf("failed to parse UUID: %s", err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
+	parsedUserUUID, err := uuid.Parse(userID)
+	if err != nil {
+		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
@@ -230,6 +251,12 @@ func DeletePlaylist(id string) (statusCode int, err error) {
 		}
 
 		statusCode = http.StatusInternalServerError
+		return
+	}
+
+	if *data.UserID != parsedUserUUID {
+		err = errors.New("you are not authorized to delete this data")
+		statusCode = http.StatusForbidden
 		return
 	}
 

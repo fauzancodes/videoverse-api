@@ -6,8 +6,8 @@ type VAVideoLike struct {
 	CustomGormModel
 	UserID  uuid.UUID `json:"user_id" gorm:"type:uuid;column:user_id"`
 	VideoID uuid.UUID `json:"video_id" gorm:"type:uuid;column:video_id"`
-	User    VAUser    `json:"user,omitempty" gorm:"foreignKey:UserID"`
-	Video   VAVideo   `json:"video,omitempty" gorm:"foreignKey:VideoID"`
+	User    *VAUser    `json:"user,omitempty" gorm:"foreignKey:UserID"`
+	Video   *VAVideo   `json:"video,omitempty" gorm:"foreignKey:VideoID"`
 }
 
 func (VAVideoLike) TableName() string {
@@ -18,8 +18,8 @@ type VAVideoDislike struct {
 	CustomGormModel
 	UserID  uuid.UUID `json:"user_id" gorm:"type:uuid;column:user_id"`
 	VideoID uuid.UUID `json:"video_id" gorm:"type:uuid;column:video_id"`
-	User    VAUser    `json:"user,omitempty" gorm:"foreignKey:UserID"`
-	Video   VAVideo   `json:"video,omitempty" gorm:"foreignKey:VideoID"`
+	User    *VAUser    `json:"user,omitempty" gorm:"foreignKey:UserID"`
+	Video   *VAVideo   `json:"video,omitempty" gorm:"foreignKey:VideoID"`
 }
 
 func (VAVideoDislike) TableName() string {

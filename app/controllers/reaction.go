@@ -99,7 +99,7 @@ func GetVideoLikes(c *gin.Context) {
 	}
 
 	withUser, _ := strconv.ParseBool(c.Query("with_user"))
-	withVideo, _ := strconv.ParseBool(c.Query("with_Video"))
+	withVideo, _ := strconv.ParseBool(c.Query("with_video"))
 
 	var preloadFields []string
 	if withUser {
@@ -264,7 +264,7 @@ func GetVideoDislikes(c *gin.Context) {
 	}
 
 	withUser, _ := strconv.ParseBool(c.Query("with_user"))
-	withVideo, _ := strconv.ParseBool(c.Query("with_Video"))
+	withVideo, _ := strconv.ParseBool(c.Query("with_video"))
 
 	var preloadFields []string
 	if withUser {

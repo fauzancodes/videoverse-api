@@ -23,7 +23,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"firstname\": \"Grey\",\r\n  \"lastname\": \"Black\",\r\n  \"gender\": \"male\",\r\n  \"email\": \"greybyteX@gmail.com\",\r\n  \"password\": \"Password@123\",\r\n  \"success_verification_url\": \"https://fauzancodes.id\",\r\n  \"failed_verification_url\": \"https://fauzancodes.id/about-me\"\r\n}",
+							"raw": "{\r\n  \"firstname\": \"Grey\",\r\n  \"lastname\": \"Black\",\r\n  \"gender\": \"male\",\r\n  \"email\": \"greybyte0222@gmail.com\",\r\n  \"password\": \"Password@123\",\r\n  \"success_verification_url\": \"https://fauzancodes.id\",\r\n  \"failed_verification_url\": \"https://fauzancodes.id/about-me\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -135,7 +135,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{BASE_URL}}/v1/auth/user",
+							"raw": "{{BASE_URL}}/v1/auth/user?with_videos=true&with_reactions=true",
 							"host": [
 								"{{BASE_URL}}"
 							],
@@ -143,6 +143,18 @@
 								"v1",
 								"auth",
 								"user"
+							],
+							"query": [
+								{
+									"key": "with_videos",
+									"value": "true",
+									"description": "Displays all videos owned by the user"
+								},
+								{
+									"key": "with_reactions",
+									"value": "true",
+									"description": "Displays all reactions given by the user"
+								}
 							]
 						}
 					},
@@ -358,7 +370,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstname\": \"Grey\",\r\n    \"lastname\": \"Black\",\r\n    \"gender\": \"male\",\r\n    \"picture\": \"https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/gray-background-7131-98db5e6ffc4972baa4087760291cbc3e@1x.jpg\",\r\n    \"description\": \"Lorem ipsum dolor sit amet\",\r\n    \"location\": \"Indonesia\",\r\n    \"social_media\": [\r\n        {\r\n            \"name\": \"instagram\",\r\n            \"link\": \"\"\r\n        },\r\n        {\r\n            \"name\": \"linkedin\",\r\n            \"link\": \"https://www.linkedin.com/\"\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"firstname\": \"Grey\",\r\n    \"lastname\": \"Black\",\r\n    \"gender\": \"male\",\r\n    \"date_of_birth\": \"1990-01-01\",\r\n    \"picture\": \"https://res.cloudinary.com/dudugnox9/image/upload/v1739601923/videoverse-api/d04060a7-f80d-4041-84cb-b7b110e9645a/if8cg342h6udedgfsa7j.png\",\r\n    \"description\": \"Lorem ipsum dolor sit amet\",\r\n    \"location\": \"Indonesia\",\r\n    \"social_media\": [\r\n        {\r\n            \"name\": \"instagram\",\r\n            \"link\": \"https://www.instagram.com/x\"\r\n        },\r\n        {\r\n            \"name\": \"linkedin\",\r\n            \"link\": \"https://www.linkedin.com/x\"\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -373,6 +385,2520 @@
 							"path": [
 								"v1",
 								"profiles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Upload",
+			"item": [
+				{
+					"name": "Upload Picture Or Video",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/ASUS/Downloads/Video/4237846-uhd_3840_2160_24fps.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/v1/upload",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Video",
+			"item": [
+				{
+					"name": "Category",
+					"item": [
+						{
+							"name": "Create Video Category",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Nature\",\r\n    \"description\": \"About nature\",\r\n    \"status\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/categories",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Video Categories",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Description</th>\r",
+											"        <th>Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{description}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/categories?with_videos=true",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"categories"
+									],
+									"query": [
+										{
+											"key": "with_videos",
+											"value": "true",
+											"description": "Displays all videos in each category"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Video Category",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/categories/:id?with_videos=true",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"categories",
+										":id"
+									],
+									"query": [
+										{
+											"key": "with_videos",
+											"value": "true",
+											"description": "Displays all videos in this category"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2f322677-d264-462e-be2f-4e85f8eb707d",
+											"description": "Category id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Video Category",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Coding Tutorials\",\r\n    \"description\": \"Tutorials about coding\",\r\n    \"status\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/categories/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"categories",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2f322677-d264-462e-be2f-4e85f8eb707d",
+											"description": "Category id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Video Category",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/categories/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"categories",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "2f322677-d264-462e-be2f-4e85f8eb707d",
+											"description": "Category id"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Playlist",
+					"item": [
+						{
+							"name": "Create Playlist",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Waterfall X\",\r\n    \"description\": \"Cras feugiat molestie massa. Nullam viverra sapien purus, vitae condimentum libero pulvinar a. Nam eget fringilla massa. Integer ac feugiat nisi. Nulla semper lorem et finibus cursus. Quisque lobortis neque sem, sit amet efficitur diam tempor in. Aenean sit amet euismod dui. Praesent in ipsum dictum, convallis massa id, fermentum mauris. Donec efficitur eleifend maximus. Vestibulum a dapibus mauris, sit amet commodo nunc.\",\r\n    \"visibility\": \"private\",\r\n    \"status\": true,\r\n    \"video_ids\": [\"cf27ff3b-5676-4556-9f0d-bb2b025d7b18\", \"2bf678cb-992d-4fd0-91d7-bf0eee320b56\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/playlists",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"playlists"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Playlist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/playlists/:id?with_user=true&with_videos=true",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"playlists",
+										":id"
+									],
+									"query": [
+										{
+											"key": "with_user",
+											"value": "true",
+											"description": "Displays the playlist owner user"
+										},
+										{
+											"key": "with_videos",
+											"value": "true",
+											"description": "Displays all videos in this playlist"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "984d0f50-c597-48e3-9bf1-aca27d4e79b1",
+											"description": "Id of the playlist"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Public Playlist",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/playlists/public/:id?with_user=true&with_videos=true",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"playlists",
+										"public",
+										":id"
+									],
+									"query": [
+										{
+											"key": "with_user",
+											"value": "true",
+											"description": "Displays the playlist owner user"
+										},
+										{
+											"key": "with_videos",
+											"value": "true",
+											"description": "Displays all videos in this playlist"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "984d0f50-c597-48e3-9bf1-aca27d4e79b1",
+											"description": "Id of the playlist"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Playlists",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/playlists?with_user=true&with_videos=true&visibility=private",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"playlists"
+									],
+									"query": [
+										{
+											"key": "with_user",
+											"value": "true",
+											"description": "Displays the playlist owner user"
+										},
+										{
+											"key": "with_videos",
+											"value": "true",
+											"description": "Displays all videos in the playlist"
+										},
+										{
+											"key": "visibility",
+											"value": "private",
+											"description": "Filter by playlist visibility (Available: public, unlisted, private)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Public Playlists",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/playlists/public?with_user=true&with_videos=true&user_id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"playlists",
+										"public"
+									],
+									"query": [
+										{
+											"key": "with_user",
+											"value": "true",
+											"description": "Displays the playlist owner user"
+										},
+										{
+											"key": "with_videos",
+											"value": "true",
+											"description": "Displays all videos in the playlist"
+										},
+										{
+											"key": "user_id",
+											"value": null,
+											"description": "Filter videos by user"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Playlist",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Waterfall XYZ\",\r\n    \"description\": \"Cras feugiat molestie massa. Nullam viverra sapien purus, vitae condimentum libero pulvinar a. Nam eget fringilla massa. Integer ac feugiat nisi. Nulla semper lorem et finibus cursus. Quisque lobortis neque sem, sit amet efficitur diam tempor in. Aenean sit amet euismod dui. Praesent in ipsum dictum, convallis massa id, fermentum mauris. Donec efficitur eleifend maximus. Vestibulum a dapibus mauris, sit amet commodo nunc.\",\r\n    \"visibility\": \"public\",\r\n    \"status\": true,\r\n    \"video_ids\": [\"2bf678cb-992d-4fd0-91d7-bf0eee320b56\"]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/playlists/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"playlists",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "fde1126d-f7b7-4937-9d45-a44a72f64a49",
+											"description": "Id of the video"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Playlist",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/playlists/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"playlists",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "fde1126d-f7b7-4937-9d45-a44a72f64a49",
+											"description": "Id of the video"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Reaction",
+					"item": [
+						{
+							"name": "Create Like",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"video_id\": \"cf27ff3b-5676-4556-9f0d-bb2b025d7b18\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/likes",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"likes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Dislike",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"video_id\": \"cf27ff3b-5676-4556-9f0d-bb2b025d7b18\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/dislikes",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"dislikes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Likes",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/likes?with_user=true&with_video=true&user_id=d04060a7-f80d-4041-84cb-b7b110e9645a&video_id=cf27ff3b-5676-4556-9f0d-bb2b025d7b18",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"likes"
+									],
+									"query": [
+										{
+											"key": "with_user",
+											"value": "true",
+											"description": "Displays the like owner user"
+										},
+										{
+											"key": "with_video",
+											"value": "true",
+											"description": "Showing liked video"
+										},
+										{
+											"key": "user_id",
+											"value": "d04060a7-f80d-4041-84cb-b7b110e9645a",
+											"description": "Filter by user id"
+										},
+										{
+											"key": "video_id",
+											"value": "cf27ff3b-5676-4556-9f0d-bb2b025d7b18",
+											"description": "Filter by video id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Dislike",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/dislikes?with_user=true&with_video=true&user_id=d04060a7-f80d-4041-84cb-b7b110e9645a&video_id=cf27ff3b-5676-4556-9f0d-bb2b025d7b18",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"dislikes"
+									],
+									"query": [
+										{
+											"key": "with_user",
+											"value": "true",
+											"description": "Displays the like owner user"
+										},
+										{
+											"key": "with_video",
+											"value": "true",
+											"description": "Showing disliked video"
+										},
+										{
+											"key": "user_id",
+											"value": "d04060a7-f80d-4041-84cb-b7b110e9645a",
+											"description": "Filter by user id"
+										},
+										{
+											"key": "video_id",
+											"value": "cf27ff3b-5676-4556-9f0d-bb2b025d7b18",
+											"description": "Filter by video id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Like",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/likes/:video_id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"likes",
+										":video_id"
+									],
+									"variable": [
+										{
+											"key": "video_id",
+											"value": "cf27ff3b-5676-4556-9f0d-bb2b025d7b19",
+											"description": "Id of the video"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Dislike",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/dislikes/:video_id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"dislikes",
+										":video_id"
+									],
+									"variable": [
+										{
+											"key": "video_id",
+											"value": "cf27ff3b-5676-4556-9f0d-bb2b025d7b18",
+											"description": "Id of the video"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Comment",
+					"item": [
+						{
+							"name": "Create Comment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"parent_id\": \"\",\r\n    \"video_id\": \"cf27ff3b-5676-4556-9f0d-bb2b025d7b18\",\r\n    \"content\": \"Nice!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/comments",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"comments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Comments",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/comments?user_id&video_id&parent_id&with_user=true&with_video=true&with_parent=true&with_replies=true",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"comments"
+									],
+									"query": [
+										{
+											"key": "user_id",
+											"value": null,
+											"description": "Filter by user id"
+										},
+										{
+											"key": "video_id",
+											"value": null,
+											"description": "Filter by video id"
+										},
+										{
+											"key": "parent_id",
+											"value": null,
+											"description": "Filter by parent id"
+										},
+										{
+											"key": "with_user",
+											"value": "true",
+											"description": "Displays the user who made the comment"
+										},
+										{
+											"key": "with_video",
+											"value": "true",
+											"description": "Showing commented videos"
+										},
+										{
+											"key": "with_parent",
+											"value": "true",
+											"description": "Displays the parent of the comment"
+										},
+										{
+											"key": "with_replies",
+											"value": "true",
+											"description": "Showing all replies to the comment"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Comment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/comments/:id?with_user=true&with_video=true&with_parent=true&with_replies=true",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"comments",
+										":id"
+									],
+									"query": [
+										{
+											"key": "with_user",
+											"value": "true",
+											"description": "Displays the user who made the comment"
+										},
+										{
+											"key": "with_video",
+											"value": "true",
+											"description": "Showing commented videos"
+										},
+										{
+											"key": "with_parent",
+											"value": "true",
+											"description": "Displays the parent of the comment"
+										},
+										{
+											"key": "with_replies",
+											"value": "true",
+											"description": "Showing all replies to the comment"
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "d2b428c9-4480-4d84-89c2-ecab57027430",
+											"description": "Id of the comment"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Comment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"Nice Video!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/comments/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"comments",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "d2b428c9-4480-4d84-89c2-ecab57027430",
+											"description": "Id of the comment"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Comment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/videos/comments/:id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"videos",
+										"comments",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "3474e50b-2738-4deb-97cd-424312c7755e",
+											"description": "Id of the comment"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create Video",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"X Waterfall\",\r\n    \"description\": \"Cras feugiat molestie massa. Nullam viverra sapien purus, vitae condimentum libero pulvinar a. Nam eget fringilla massa. Integer ac feugiat nisi. Nulla semper lorem et finibus cursus. Quisque lobortis neque sem, sit amet efficitur diam tempor in. Aenean sit amet euismod dui. Praesent in ipsum dictum, convallis massa id, fermentum mauris. Donec efficitur eleifend maximus. Vestibulum a dapibus mauris, sit amet commodo nunc.\",\r\n    \"category_id\": \"47e7a6d3-daf1-4678-ba72-ea78c32c7027\",\r\n    \"video_url\": \"https://res.cloudinary.com/dudugnox9/video/upload/v1742978848/videoverse-api/d04060a7-f80d-4041-84cb-b7b110e9645a/qy1yddcffvd0dnojmgtq.mp4\",\r\n    \"thumbnail_url\": \"\",\r\n    \"visibility\": \"private\",\r\n    \"tags\": [\"waterfall\",\"nature\",\"beauty\",\"beautiful\",\"water\"],\r\n    \"status\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/v1/videos",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Public Videos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>ID</th>\r",
+									"        <th>Title</th>\r",
+									"        <th>Category ID</th>\r",
+									"        <th>Video URL</th>\r",
+									"        <th>Thumbnail URL</th>\r",
+									"        <th>Visibility</th>\r",
+									"        <th>Status</th>\r",
+									"        <th>User ID</th>\r",
+									"        <th>Email</th>\r",
+									"        <th>Is Verified</th>\r",
+									"        <th>Category Title</th>\r",
+									"        <th>Category Description</th>\r",
+									"        <th>Category Status</th>\r",
+									"    </tr>\r",
+									"    \r",
+									"    {{#each response.data}}\r",
+									"        <tr>\r",
+									"            <td>{{id}}</td>\r",
+									"            <td>{{title}}</td>\r",
+									"            <td>{{category_id}}</td>\r",
+									"            <td>{{video_url}}</td>\r",
+									"            <td>{{thumbnail_url}}</td>\r",
+									"            <td>{{visibility}}</td>\r",
+									"            <td>{{status}}</td>\r",
+									"            <td>{{user_id}}</td>\r",
+									"            <td>{{user.email}}</td>\r",
+									"            <td>{{user.is_verified}}</td>\r",
+									"            <td>{{category.title}}</td>\r",
+									"            <td>{{category.description}}</td>\r",
+									"            <td>{{category.status}}</td>\r",
+									"        </tr>\r",
+									"    {{/each}}\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return {response: pm.response.json()}\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/videos/public?with_user=true&with_category=true&with_playlists=true&category_id=47e7a6d3-daf1-4678-ba72-ea78c32c7027&user_id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"videos",
+								"public"
+							],
+							"query": [
+								{
+									"key": "with_user",
+									"value": "true",
+									"description": "Displays the video owner user"
+								},
+								{
+									"key": "with_category",
+									"value": "true",
+									"description": "Showing video category"
+								},
+								{
+									"key": "with_playlists",
+									"value": "true",
+									"description": "Displays all playlists that have the video included in it"
+								},
+								{
+									"key": "category_id",
+									"value": "47e7a6d3-daf1-4678-ba72-ea78c32c7027",
+									"description": "Filter videos by category"
+								},
+								{
+									"key": "user_id",
+									"value": null,
+									"description": "Filter videos by user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Video",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>ID</th>\r",
+									"        <th>Title</th>\r",
+									"        <th>Category ID</th>\r",
+									"        <th>Video URL</th>\r",
+									"        <th>Thumbnail URL</th>\r",
+									"        <th>Visibility</th>\r",
+									"        <th>Status</th>\r",
+									"        <th>User ID</th>\r",
+									"        <th>Email</th>\r",
+									"        <th>Is Verified</th>\r",
+									"        <th>Category Title</th>\r",
+									"        <th>Category Description</th>\r",
+									"        <th>Category Status</th>\r",
+									"    </tr>\r",
+									"    \r",
+									"    {{#each response.data}}\r",
+									"        <tr>\r",
+									"            <td>{{id}}</td>\r",
+									"            <td>{{title}}</td>\r",
+									"            <td>{{category_id}}</td>\r",
+									"            <td>{{video_url}}</td>\r",
+									"            <td>{{thumbnail_url}}</td>\r",
+									"            <td>{{visibility}}</td>\r",
+									"            <td>{{status}}</td>\r",
+									"            <td>{{user_id}}</td>\r",
+									"            <td>{{user.email}}</td>\r",
+									"            <td>{{user.is_verified}}</td>\r",
+									"            <td>{{category.title}}</td>\r",
+									"            <td>{{category.description}}</td>\r",
+									"            <td>{{category.status}}</td>\r",
+									"        </tr>\r",
+									"    {{/each}}\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return {response: pm.response.json()}\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/videos/:id?with_user=true&with_category=true&with_playlists=true",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"videos",
+								":id"
+							],
+							"query": [
+								{
+									"key": "with_user",
+									"value": "true",
+									"description": "Displays the video owner user"
+								},
+								{
+									"key": "with_category",
+									"value": "true",
+									"description": "Showing video category"
+								},
+								{
+									"key": "with_playlists",
+									"value": "true",
+									"description": "Displays all playlists that have the video included in it"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7bac65e6-0f6d-482d-91e4-808c9d8117b3",
+									"description": "Id of the video"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Video",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Beautiful Green Waterfall\",\r\n    \"description\": \"Cras feugiat molestie massa. Nullam viverra sapien purus, vitae condimentum libero pulvinar a. Nam eget fringilla massa. Integer ac feugiat nisi. Nulla semper lorem et finibus cursus. Quisque lobortis neque sem, sit amet efficitur diam tempor in. Aenean sit amet euismod dui. Praesent in ipsum dictum, convallis massa id, fermentum mauris. Donec efficitur eleifend maximus. Vestibulum a dapibus mauris, sit amet commodo nunc.\",\r\n    \"category_id\": \"47e7a6d3-daf1-4678-ba72-ea78c32c7027\",\r\n    \"video_url\": \"https://res.cloudinary.com/dudugnox9/video/upload/v1742978848/videoverse-api/d04060a7-f80d-4041-84cb-b7b110e9645a/qy1yddcffvd0dnojmgtq.mp4\",\r\n    \"thumbnail_url\": \"\",\r\n    \"visibility\": \"private\",\r\n    \"tags\": [\"waterfall\",\"nature\",\"beauty\",\"beautiful\",\"water\"],\r\n    \"status\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/v1/videos/:id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"videos",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2bf678cb-992d-4fd0-91d7-bf0eee320b56",
+									"description": "Id of the video"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Public Video",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>ID</th>\r",
+									"        <th>Title</th>\r",
+									"        <th>Category ID</th>\r",
+									"        <th>Video URL</th>\r",
+									"        <th>Thumbnail URL</th>\r",
+									"        <th>Visibility</th>\r",
+									"        <th>Status</th>\r",
+									"        <th>User ID</th>\r",
+									"        <th>Email</th>\r",
+									"        <th>Is Verified</th>\r",
+									"        <th>Category Title</th>\r",
+									"        <th>Category Description</th>\r",
+									"        <th>Category Status</th>\r",
+									"    </tr>\r",
+									"    \r",
+									"    {{#each response.data}}\r",
+									"        <tr>\r",
+									"            <td>{{id}}</td>\r",
+									"            <td>{{title}}</td>\r",
+									"            <td>{{category_id}}</td>\r",
+									"            <td>{{video_url}}</td>\r",
+									"            <td>{{thumbnail_url}}</td>\r",
+									"            <td>{{visibility}}</td>\r",
+									"            <td>{{status}}</td>\r",
+									"            <td>{{user_id}}</td>\r",
+									"            <td>{{user.email}}</td>\r",
+									"            <td>{{user.is_verified}}</td>\r",
+									"            <td>{{category.title}}</td>\r",
+									"            <td>{{category.description}}</td>\r",
+									"            <td>{{category.status}}</td>\r",
+									"        </tr>\r",
+									"    {{/each}}\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return {response: pm.response.json()}\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/videos/public/:id?with_user=true&with_category=true&with_playlists=true",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"videos",
+								"public",
+								":id"
+							],
+							"query": [
+								{
+									"key": "with_user",
+									"value": "true",
+									"description": "Displays the video owner user"
+								},
+								{
+									"key": "with_category",
+									"value": "true",
+									"description": "Showing video category"
+								},
+								{
+									"key": "with_playlists",
+									"value": "true",
+									"description": "Displays all playlists that have the video included in it"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "cf27ff3b-5676-4556-9f0d-bb2b025d7b18",
+									"description": "Id of the video"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Videos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>ID</th>\r",
+									"        <th>Title</th>\r",
+									"        <th>Category ID</th>\r",
+									"        <th>Video URL</th>\r",
+									"        <th>Thumbnail URL</th>\r",
+									"        <th>Visibility</th>\r",
+									"        <th>Status</th>\r",
+									"        <th>User ID</th>\r",
+									"        <th>Email</th>\r",
+									"        <th>Is Verified</th>\r",
+									"        <th>Category Title</th>\r",
+									"        <th>Category Description</th>\r",
+									"        <th>Category Status</th>\r",
+									"    </tr>\r",
+									"    \r",
+									"    {{#each response.data}}\r",
+									"        <tr>\r",
+									"            <td>{{id}}</td>\r",
+									"            <td>{{title}}</td>\r",
+									"            <td>{{category_id}}</td>\r",
+									"            <td>{{video_url}}</td>\r",
+									"            <td>{{thumbnail_url}}</td>\r",
+									"            <td>{{visibility}}</td>\r",
+									"            <td>{{status}}</td>\r",
+									"            <td>{{user_id}}</td>\r",
+									"            <td>{{user.email}}</td>\r",
+									"            <td>{{user.is_verified}}</td>\r",
+									"            <td>{{category.title}}</td>\r",
+									"            <td>{{category.description}}</td>\r",
+									"            <td>{{category.status}}</td>\r",
+									"        </tr>\r",
+									"    {{/each}}\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return {response: pm.response.json()}\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/videos?with_user=true&with_category=true&with_playlists=true&visibility=&category_id=47e7a6d3-daf1-4678-ba72-ea78c32c7027",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"videos"
+							],
+							"query": [
+								{
+									"key": "with_user",
+									"value": "true",
+									"description": "Displays the video owner user"
+								},
+								{
+									"key": "with_category",
+									"value": "true",
+									"description": "Showing video category"
+								},
+								{
+									"key": "with_playlists",
+									"value": "true",
+									"description": "Displays all playlists that have the video included in it"
+								},
+								{
+									"key": "visibility",
+									"value": "",
+									"description": "Filter by video visibility (Available: public, unlisted, private)"
+								},
+								{
+									"key": "category_id",
+									"value": "47e7a6d3-daf1-4678-ba72-ea78c32c7027",
+									"description": "Filter videos by category"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Video",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/videos/:id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"videos",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "7bac65e6-0f6d-482d-91e4-808c9d8117b3",
+									"description": "Id of the video"
+								}
 							]
 						}
 					},

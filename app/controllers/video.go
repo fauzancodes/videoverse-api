@@ -102,10 +102,18 @@ func GetVideos(c *gin.Context) {
 	}
 
 	withUser, _ := strconv.ParseBool(c.Query("with_user"))
+	withCategory, _ := strconv.ParseBool(c.Query("with_category"))
+	withPlaylists, _ := strconv.ParseBool(c.Query("with_playlists"))
 
 	var preloadFields []string
 	if withUser {
 		preloadFields = append(preloadFields, "User")
+	}
+	if withCategory {
+		preloadFields = append(preloadFields, "Category")
+	}
+	if withPlaylists {
+		preloadFields = append(preloadFields, "Playlists")
 	}
 
 	param := utils.PopulatePaging(c, "status")
@@ -235,10 +243,18 @@ func GetPublicVideoByID(c *gin.Context) {
 	}
 
 	withUser, _ := strconv.ParseBool(c.Query("with_user"))
+	withCategory, _ := strconv.ParseBool(c.Query("with_category"))
+	withPlaylists, _ := strconv.ParseBool(c.Query("with_playlists"))
 
 	var preloadFields []string
 	if withUser {
 		preloadFields = append(preloadFields, "User")
+	}
+	if withCategory {
+		preloadFields = append(preloadFields, "Category")
+	}
+	if withPlaylists {
+		preloadFields = append(preloadFields, "Playlists")
 	}
 
 	data, statusCode, err := service.GetVideoByID(id, preloadFields)
@@ -277,6 +293,19 @@ func GetPublicVideoByID(c *gin.Context) {
 }
 
 func UpdateVideo(c *gin.Context) {
+	userID, statusCode, err := utils.GetCurrentUserID(c)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to get current userID",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
 	id, statusCode, err := utils.ParamUUID(c, "id")
 	if err != nil {
 		c.JSON(
@@ -315,7 +344,7 @@ func UpdateVideo(c *gin.Context) {
 		return
 	}
 
-	data, statusCode, err := service.UpdateVideo(id, request)
+	data, statusCode, err := service.UpdateVideo(id, userID, request)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -339,6 +368,19 @@ func UpdateVideo(c *gin.Context) {
 }
 
 func DeleteVideo(c *gin.Context) {
+	userID, statusCode, err := utils.GetCurrentUserID(c)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to get current userID",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
 	id, statusCode, err := utils.ParamUUID(c, "id")
 	if err != nil {
 		c.JSON(
@@ -352,7 +394,7 @@ func DeleteVideo(c *gin.Context) {
 		return
 	}
 
-	statusCode, err = service.DeleteVideo(id)
+	statusCode, err = service.DeleteVideo(id, userID)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -519,6 +561,19 @@ func GetVideoCategoryByID(c *gin.Context) {
 }
 
 func UpdateVideoCategory(c *gin.Context) {
+	userID, statusCode, err := utils.GetCurrentUserID(c)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to get current userID",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
 	id, statusCode, err := utils.ParamUUID(c, "id")
 	if err != nil {
 		c.JSON(
@@ -557,7 +612,7 @@ func UpdateVideoCategory(c *gin.Context) {
 		return
 	}
 
-	data, statusCode, err := service.UpdateVideoCategory(id, request)
+	data, statusCode, err := service.UpdateVideoCategory(id, userID, request)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -581,6 +636,19 @@ func UpdateVideoCategory(c *gin.Context) {
 }
 
 func DeleteVideoCategory(c *gin.Context) {
+	userID, statusCode, err := utils.GetCurrentUserID(c)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to get current userID",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
 	id, statusCode, err := utils.ParamUUID(c, "id")
 	if err != nil {
 		c.JSON(
@@ -594,7 +662,7 @@ func DeleteVideoCategory(c *gin.Context) {
 		return
 	}
 
-	statusCode, err = service.DeleteVideoCategory(id)
+	statusCode, err = service.DeleteVideoCategory(id, userID)
 	if err != nil {
 		c.JSON(
 			statusCode,
