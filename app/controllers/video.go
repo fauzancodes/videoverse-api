@@ -107,7 +107,7 @@ func GetVideos(c *gin.Context) {
 
 	var preloadFields []string
 	if withUser {
-		preloadFields = append(preloadFields, "User")
+		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
 	if withCategory {
 		preloadFields = append(preloadFields, "Category")
@@ -164,7 +164,7 @@ func GetPublicVideos(c *gin.Context) {
 
 	var preloadFields []string
 	if withUser {
-		preloadFields = append(preloadFields, "User")
+		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
 
 	param := utils.PopulatePaging(c, "status")
@@ -202,7 +202,7 @@ func GetVideoByID(c *gin.Context) {
 
 	var preloadFields []string
 	if withUser {
-		preloadFields = append(preloadFields, "User")
+		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
 
 	data, statusCode, err := service.GetVideoByID(id, preloadFields)
@@ -248,7 +248,7 @@ func GetPublicVideoByID(c *gin.Context) {
 
 	var preloadFields []string
 	if withUser {
-		preloadFields = append(preloadFields, "User")
+		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
 	if withCategory {
 		preloadFields = append(preloadFields, "Category")

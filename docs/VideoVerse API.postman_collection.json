@@ -23,7 +23,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"firstname\": \"Grey\",\r\n  \"lastname\": \"Black\",\r\n  \"gender\": \"male\",\r\n  \"email\": \"greybyte0222@gmail.com\",\r\n  \"password\": \"Password@123\",\r\n  \"success_verification_url\": \"https://fauzancodes.id\",\r\n  \"failed_verification_url\": \"https://fauzancodes.id/about-me\"\r\n}",
+							"raw": "{\r\n  \"firstname\": \"Try\",\r\n  \"lastname\": \"Catcher\",\r\n  \"gender\": \"male\",\r\n  \"email\": \"try.cather@gmail.com\",\r\n  \"password\": \"Password@123\",\r\n  \"success_verification_url\": \"https://fauzancodes.id\",\r\n  \"failed_verification_url\": \"https://fauzancodes.id/about-me\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -92,7 +92,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"greybyte0222@gmail.com\",\r\n  \"password\": \"Password@123\"\r\n}",
+							"raw": "{\r\n  \"email\": \"try.cather@gmail.com\",\r\n  \"password\": \"Password@123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -422,7 +422,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Users/ASUS/Downloads/Video/4237846-uhd_3840_2160_24fps.mp4"
+									"src": "/C:/Users/ASUS/Downloads/Picture/henrik-donnestad-t2Sai-AqIpI-unsplash.jpg"
 								}
 							]
 						},
@@ -2898,6 +2898,463 @@
 									"key": "id",
 									"value": "7bac65e6-0f6d-482d-91e4-808c9d8117b3",
 									"description": "Id of the video"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Channel",
+			"item": [
+				{
+					"name": "Subscription",
+					"item": [
+						{
+							"name": "Create Subscription",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"channel_id\": \"fa5ec3c9-9fe4-4dbc-be8e-5a1ae265cd49\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v1/channels/subscriptions",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"channels",
+										"subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Subscriptions",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>ID</th>\r",
+											"        <th>Title</th>\r",
+											"        <th>Category ID</th>\r",
+											"        <th>Video URL</th>\r",
+											"        <th>Thumbnail URL</th>\r",
+											"        <th>Visibility</th>\r",
+											"        <th>Status</th>\r",
+											"        <th>User ID</th>\r",
+											"        <th>Email</th>\r",
+											"        <th>Is Verified</th>\r",
+											"        <th>Category Title</th>\r",
+											"        <th>Category Description</th>\r",
+											"        <th>Category Status</th>\r",
+											"    </tr>\r",
+											"    \r",
+											"    {{#each response.data}}\r",
+											"        <tr>\r",
+											"            <td>{{id}}</td>\r",
+											"            <td>{{title}}</td>\r",
+											"            <td>{{category_id}}</td>\r",
+											"            <td>{{video_url}}</td>\r",
+											"            <td>{{thumbnail_url}}</td>\r",
+											"            <td>{{visibility}}</td>\r",
+											"            <td>{{status}}</td>\r",
+											"            <td>{{user_id}}</td>\r",
+											"            <td>{{user.email}}</td>\r",
+											"            <td>{{user.is_verified}}</td>\r",
+											"            <td>{{category.title}}</td>\r",
+											"            <td>{{category.description}}</td>\r",
+											"            <td>{{category.status}}</td>\r",
+											"        </tr>\r",
+											"    {{/each}}\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/channels/subscriptions?with_subscriber=true&with_channel=true&subscriber_id=496b5cf8-e8e8-4171-992e-ef9257c83f89&channel_id=fa5ec3c9-9fe4-4dbc-be8e-5a1ae265cd49",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"channels",
+										"subscriptions"
+									],
+									"query": [
+										{
+											"key": "with_subscriber",
+											"value": "true",
+											"description": "Displays the subscription owner user"
+										},
+										{
+											"key": "with_channel",
+											"value": "true",
+											"description": "Showing subscribed channel"
+										},
+										{
+											"key": "subscriber_id",
+											"value": "496b5cf8-e8e8-4171-992e-ef9257c83f89",
+											"description": "Filter by subscriber id"
+										},
+										{
+											"key": "channel_id",
+											"value": "fa5ec3c9-9fe4-4dbc-be8e-5a1ae265cd49",
+											"description": "Filter by channel id"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Subscribtion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v1/channels/subscriptions/:channel_id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v1",
+										"channels",
+										"subscriptions",
+										":channel_id"
+									],
+									"variable": [
+										{
+											"key": "channel_id",
+											"value": "fa5ec3c9-9fe4-4dbc-be8e-5a1ae265cd49",
+											"description": "Id of the channel"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create Channel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Natural Wonder\",\r\n    \"picture\" : \"https://res.cloudinary.com/dudugnox9/image/upload/v1743723750/videoverse-api/d04060a7-f80d-4041-84cb-b7b110e9645a/rqn7jf4nglekk6hzrali.jpg\",\r\n    \"description\" : \"Talk about nature\",\r\n    \"location\" : \"Indonesia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/v1/channels",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"channels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Channels",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/channels?user_id=&with_user=true&with_subscribers=true",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"channels"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "",
+									"description": "Filter by user Id"
+								},
+								{
+									"key": "with_user",
+									"value": "true",
+									"description": "Displays channel owner user data"
+								},
+								{
+									"key": "with_subscribers",
+									"value": "true",
+									"description": "Displays data of all subscribers from the channel"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Channel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/channels/:id?with_user=true&with_subscribers=true",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"channels",
+								":id"
+							],
+							"query": [
+								{
+									"key": "with_user",
+									"value": "true",
+									"description": "Displays channel owner user data"
+								},
+								{
+									"key": "with_subscribers",
+									"value": "true",
+									"description": "Displays data of all subscribers from the channel"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "0286b163-80c7-49a0-8264-818ceffee2d6",
+									"description": "Id of the channel"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Channel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Natural Wonder X\",\r\n    \"picture\" : \"https://res.cloudinary.com/dudugnox9/image/upload/v1743723750/videoverse-api/d04060a7-f80d-4041-84cb-b7b110e9645a/rqn7jf4nglekk6hzrali.jpg\",\r\n    \"description\" : \"Talk about nature\",\r\n    \"location\" : \"Indonesia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/v1/channels/:id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"channels",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "0286b163-80c7-49a0-8264-818ceffee2d6",
+									"description": "Id of the channel"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Channel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/channels/:id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"channels",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "0286b163-80c7-49a0-8264-818ceffee2d6",
+									"description": "Id of the channel"
 								}
 							]
 						}

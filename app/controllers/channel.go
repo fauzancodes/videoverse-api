@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -10,21 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateVideoLike(c *gin.Context) {
-	userID, statusCode, err := utils.GetCurrentUserID(c)
-	if err != nil {
-		c.JSON(
-			statusCode,
-			dto.Response{
-				Status:  statusCode,
-				Message: "Failed to get current userID",
-				Error:   err.Error(),
-			},
-		)
-		return
-	}
-
-	var request dto.VideoLikeRequest
+func CreateChannel(c *gin.Context) {
+	var request dto.ChannelRequest
 	if err := c.Bind(&request); err != nil {
 		c.JSON(
 			http.StatusUnprocessableEntity,
@@ -49,13 +37,26 @@ func CreateVideoLike(c *gin.Context) {
 		return
 	}
 
-	result, statusCode, err := service.CreateVideoLike(userID, request)
+	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
 		c.JSON(
 			statusCode,
 			dto.Response{
 				Status:  statusCode,
-				Message: "Failed to create",
+				Message: "Failed to get current userID",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
+	result, statusCode, err := service.CreateChannel(userID, request)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to update data",
 				Error:   err.Error(),
 			},
 		)
@@ -66,26 +67,14 @@ func CreateVideoLike(c *gin.Context) {
 		statusCode,
 		dto.Response{
 			Status:  statusCode,
-			Message: "Success to create",
+			Message: "Success to update data",
 			Data:    result,
 		},
 	)
 }
 
-func GetVideoLikes(c *gin.Context) {
+func GetChannels(c *gin.Context) {
 	userID, statusCode, err := utils.QueryParamUUID(c, "user_id")
-	if err != nil {
-		c.JSON(
-			statusCode,
-			dto.Response{
-				Status:  statusCode,
-				Message: "Invalid parameter",
-				Error:   err.Error(),
-			},
-		)
-		return
-	}
-	videoID, statusCode, err := utils.QueryParamUUID(c, "video_id")
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -99,18 +88,20 @@ func GetVideoLikes(c *gin.Context) {
 	}
 
 	withUser, _ := strconv.ParseBool(c.Query("with_user"))
-	withVideo, _ := strconv.ParseBool(c.Query("with_video"))
+	withSubscribers, _ := strconv.ParseBool(c.Query("with_subscribers"))
 
 	var preloadFields []string
 	if withUser {
 		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
-	if withVideo {
-		preloadFields = append(preloadFields, "Video")
+	if withSubscribers {
+		preloadFields = append(preloadFields, "Subscribers", "Subscribers.Subscriber", "Subscribers.Subscriber.Profile")
 	}
 
+	fmt.Println("preloadFields: ", preloadFields)
+
 	param := utils.PopulatePaging(c, "")
-	data, _, statusCode, err := service.GetVideoLikes(videoID, userID, param, preloadFields)
+	data, _, statusCode, err := service.GetChannels(userID, param, preloadFields)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -126,21 +117,8 @@ func GetVideoLikes(c *gin.Context) {
 	c.JSON(statusCode, data)
 }
 
-func DeleteVideoLike(c *gin.Context) {
-	userID, statusCode, err := utils.GetCurrentUserID(c)
-	if err != nil {
-		c.JSON(
-			statusCode,
-			dto.Response{
-				Status:  statusCode,
-				Message: "Failed to get current userID",
-				Error:   err.Error(),
-			},
-		)
-		return
-	}
-
-	videoID, statusCode, err := utils.ParamUUID(c, "video_id")
+func GetChannelByID(c *gin.Context) {
+	id, statusCode, err := utils.ParamUUID(c, "id")
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -153,7 +131,117 @@ func DeleteVideoLike(c *gin.Context) {
 		return
 	}
 
-	statusCode, err = service.DeleteVideoLike(videoID, userID)
+	withUser, _ := strconv.ParseBool(c.Query("with_user"))
+	withSubscribers, _ := strconv.ParseBool(c.Query("with_subscribers"))
+
+	var preloadFields []string
+	if withUser {
+		preloadFields = append(preloadFields, "User", "User.Profile")
+	}
+	if withSubscribers {
+		preloadFields = append(preloadFields, "Subscribers", "Subscribers.Subscriber", "Subscribers.Subscriber.Profile")
+	}
+
+	data, statusCode, err := service.GetChannelByID(id, preloadFields)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to get data",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		dto.Response{
+			Status:  http.StatusOK,
+			Message: "Success to get data",
+			Data:    data,
+		},
+	)
+}
+
+func UpdateChannel(c *gin.Context) {
+	id, statusCode, err := utils.ParamUUID(c, "id")
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Invalid parameter",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
+	var request dto.ChannelRequest
+	if err := c.Bind(&request); err != nil {
+		c.JSON(
+			http.StatusUnprocessableEntity,
+			dto.Response{
+				Status:  http.StatusUnprocessableEntity,
+				Message: "Invalid request body",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
+	if err := request.Validate(); err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			dto.Response{
+				Status:  http.StatusBadRequest,
+				Message: "Invalid request value",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
+	data, statusCode, err := service.UpdateChannel(id, request)
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Failed to update data",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
+	c.JSON(
+		statusCode,
+		dto.Response{
+			Status:  statusCode,
+			Message: "Success to update data",
+			Data:    data,
+		},
+	)
+}
+
+func DeleteChannel(c *gin.Context) {
+	id, statusCode, err := utils.ParamUUID(c, "id")
+	if err != nil {
+		c.JSON(
+			statusCode,
+			dto.Response{
+				Status:  statusCode,
+				Message: "Invalid parameter",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
+	statusCode, err = service.DeleteChannel(id)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -175,7 +263,7 @@ func DeleteVideoLike(c *gin.Context) {
 	)
 }
 
-func CreateVideoDislike(c *gin.Context) {
+func CreateSubscription(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
 		c.JSON(
@@ -189,7 +277,7 @@ func CreateVideoDislike(c *gin.Context) {
 		return
 	}
 
-	var request dto.VideoDislikeRequest
+	var request dto.SubscriptionRequest
 	if err := c.Bind(&request); err != nil {
 		c.JSON(
 			http.StatusUnprocessableEntity,
@@ -214,7 +302,7 @@ func CreateVideoDislike(c *gin.Context) {
 		return
 	}
 
-	result, statusCode, err := service.CreateVideoDislike(userID, request)
+	result, statusCode, err := service.CreateSubscription(userID, request)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -237,8 +325,8 @@ func CreateVideoDislike(c *gin.Context) {
 	)
 }
 
-func GetVideoDislikes(c *gin.Context) {
-	userID, statusCode, err := utils.QueryParamUUID(c, "user_id")
+func GetSubscriptions(c *gin.Context) {
+	userID, statusCode, err := utils.QueryParamUUID(c, "subscriber_id")
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -250,7 +338,7 @@ func GetVideoDislikes(c *gin.Context) {
 		)
 		return
 	}
-	videoID, statusCode, err := utils.QueryParamUUID(c, "video_id")
+	channelID, statusCode, err := utils.QueryParamUUID(c, "channel_id")
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -263,19 +351,19 @@ func GetVideoDislikes(c *gin.Context) {
 		return
 	}
 
-	withUser, _ := strconv.ParseBool(c.Query("with_user"))
-	withVideo, _ := strconv.ParseBool(c.Query("with_video"))
+	withSubscriber, _ := strconv.ParseBool(c.Query("with_subscriber"))
+	withChannel, _ := strconv.ParseBool(c.Query("with_channel"))
 
 	var preloadFields []string
-	if withUser {
-		preloadFields = append(preloadFields, "User", "User.Profile")
+	if withSubscriber {
+		preloadFields = append(preloadFields, "Subscriber", "Subscriber.Profile")
 	}
-	if withVideo {
-		preloadFields = append(preloadFields, "Video")
+	if withChannel {
+		preloadFields = append(preloadFields, "Channel")
 	}
 
 	param := utils.PopulatePaging(c, "")
-	data, _, statusCode, err := service.GetVideoDislikes(videoID, userID, param, preloadFields)
+	data, _, statusCode, err := service.GetSubscriptions(channelID, userID, param, preloadFields)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -291,7 +379,7 @@ func GetVideoDislikes(c *gin.Context) {
 	c.JSON(statusCode, data)
 }
 
-func DeleteVideoDislike(c *gin.Context) {
+func DeleteSubscription(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
 		c.JSON(
@@ -305,7 +393,7 @@ func DeleteVideoDislike(c *gin.Context) {
 		return
 	}
 
-	videoID, statusCode, err := utils.ParamUUID(c, "video_id")
+	channelID, statusCode, err := utils.ParamUUID(c, "channel_id")
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -318,7 +406,7 @@ func DeleteVideoDislike(c *gin.Context) {
 		return
 	}
 
-	statusCode, err = service.DeleteVideoDislike(videoID, userID)
+	statusCode, err = service.DeleteSubscription(channelID, userID)
 	if err != nil {
 		c.JSON(
 			statusCode,

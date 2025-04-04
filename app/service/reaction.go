@@ -45,20 +45,10 @@ func CreateVideoLike(userID string, request dto.VideoLikeRequest) (response mode
 		return
 	}
 
-	dislikeData, _, _, err := repository.GetVideoDislikes(dto.FindParameter{
+	dislikeData, _, _, _ := repository.GetVideoDislikes(dto.FindParameter{
 		Filter:       "deleted_at IS NULL AND video_id = ? AND user_id = ?",
 		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
 	}, []string{})
-	if err != nil {
-		err = fmt.Errorf("failed to get data: %s", err.Error())
-		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
-			statusCode = http.StatusNotFound
-			return
-		}
-
-		statusCode = http.StatusInternalServerError
-		return
-	}
 	if len(dislikeData) != 0 {
 		repository.DeleteVideoDislike(dislikeData[0])
 	}
@@ -200,20 +190,10 @@ func CreateVideoDislike(userID string, request dto.VideoDislikeRequest) (respons
 		return
 	}
 
-	likeData, _, _, err := repository.GetVideoLikes(dto.FindParameter{
+	likeData, _, _, _ := repository.GetVideoLikes(dto.FindParameter{
 		Filter:       "deleted_at IS NULL AND video_id = ? AND user_id = ?",
 		FilterValues: []any{parsedVideoUUID, parsedUserUUID},
 	}, []string{})
-	if err != nil {
-		err = fmt.Errorf("failed to get data: %s", err.Error())
-		if strings.Contains(err.Error(), gorm.ErrRecordNotFound.Error()) {
-			statusCode = http.StatusNotFound
-			return
-		}
-
-		statusCode = http.StatusInternalServerError
-		return
-	}
 	if len(likeData) != 0 {
 		repository.DeleteVideoLike(likeData[0])
 	}

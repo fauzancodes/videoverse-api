@@ -117,7 +117,7 @@ func GetComments(c *gin.Context) {
 
 	var preloadFields []string
 	if withUser {
-		preloadFields = append(preloadFields, "User")
+		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
 	if withVideo {
 		preloadFields = append(preloadFields, "Video")
@@ -167,7 +167,7 @@ func GetCommentByID(c *gin.Context) {
 
 	var preloadFields []string
 	if withUser {
-		preloadFields = append(preloadFields, "User")
+		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
 	if withVideo {
 		preloadFields = append(preloadFields, "Video")

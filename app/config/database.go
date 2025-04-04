@@ -46,6 +46,8 @@ func RunAutoMigration() {
 		&models.VAVideoLike{},
 		&models.VAVideoDislike{},
 		&models.VAComment{},
+		&models.VAChannel{},
+		&models.VASubscription{},
 	)
 	if err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)

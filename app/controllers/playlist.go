@@ -94,7 +94,7 @@ func GetPlaylists(c *gin.Context) {
 
 	var preloadFields []string
 	if withUser {
-		preloadFields = append(preloadFields, "User")
+		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
 	if withVideos {
 		preloadFields = append(preloadFields, "Videos", "Videos.Category")
@@ -137,7 +137,7 @@ func GetPublicPlaylists(c *gin.Context) {
 
 	var preloadFields []string
 	if withUser {
-		preloadFields = append(preloadFields, "User")
+		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
 	if withVideos {
 		preloadFields = append(preloadFields, "Videos", "Videos.Category")
@@ -179,7 +179,7 @@ func GetPlaylistByID(c *gin.Context) {
 
 	var preloadFields []string
 	if withUser {
-		preloadFields = append(preloadFields, "User")
+		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
 	if withVideos {
 		preloadFields = append(preloadFields, "Videos", "Videos.Category")
@@ -227,7 +227,7 @@ func GetPublicPlaylistByID(c *gin.Context) {
 
 	var preloadFields []string
 	if withUser {
-		preloadFields = append(preloadFields, "User")
+		preloadFields = append(preloadFields, "User", "User.Profile")
 	}
 	if withVideos {
 		preloadFields = append(preloadFields, "Videos", "Videos.Category")

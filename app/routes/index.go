@@ -18,4 +18,5 @@ func Route(app *gin.Engine) {
 
 	AuthRoute(api)
 	VideoRoute(api)
+	ChannelRoute(api)
 }
