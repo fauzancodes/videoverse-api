@@ -263,7 +263,7 @@ func DeleteChannel(c *gin.Context) {
 	)
 }
 
-func CreateSubscription(c *gin.Context) {
+func CreateSubscribtion(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
 		c.JSON(
@@ -277,7 +277,7 @@ func CreateSubscription(c *gin.Context) {
 		return
 	}
 
-	var request dto.SubscriptionRequest
+	var request dto.SubscribtionRequest
 	if err := c.Bind(&request); err != nil {
 		c.JSON(
 			http.StatusUnprocessableEntity,
@@ -302,7 +302,7 @@ func CreateSubscription(c *gin.Context) {
 		return
 	}
 
-	result, statusCode, err := service.CreateSubscription(userID, request)
+	result, statusCode, err := service.CreateSubscribtion(userID, request)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -325,7 +325,7 @@ func CreateSubscription(c *gin.Context) {
 	)
 }
 
-func GetSubscriptions(c *gin.Context) {
+func GetSubscribtions(c *gin.Context) {
 	userID, statusCode, err := utils.QueryParamUUID(c, "subscriber_id")
 	if err != nil {
 		c.JSON(
@@ -363,7 +363,7 @@ func GetSubscriptions(c *gin.Context) {
 	}
 
 	param := utils.PopulatePaging(c, "")
-	data, _, statusCode, err := service.GetSubscriptions(channelID, userID, param, preloadFields)
+	data, _, statusCode, err := service.GetSubscribtions(channelID, userID, param, preloadFields)
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -379,7 +379,7 @@ func GetSubscriptions(c *gin.Context) {
 	c.JSON(statusCode, data)
 }
 
-func DeleteSubscription(c *gin.Context) {
+func DeleteSubscribtion(c *gin.Context) {
 	userID, statusCode, err := utils.GetCurrentUserID(c)
 	if err != nil {
 		c.JSON(
@@ -387,6 +387,19 @@ func DeleteSubscription(c *gin.Context) {
 			dto.Response{
 				Status:  statusCode,
 				Message: "Failed to get current userID",
+				Error:   err.Error(),
+			},
+		)
+		return
+	}
+
+	var request dto.UnsubscribeRequest
+	if err := c.Bind(&request); err != nil {
+		c.JSON(
+			http.StatusUnprocessableEntity,
+			dto.Response{
+				Status:  http.StatusUnprocessableEntity,
+				Message: "Invalid request body",
 				Error:   err.Error(),
 			},
 		)
@@ -406,7 +419,7 @@ func DeleteSubscription(c *gin.Context) {
 		return
 	}
 
-	statusCode, err = service.DeleteSubscription(channelID, userID)
+	statusCode, err = service.DeleteSubscribtion(channelID, userID, request)
 	if err != nil {
 		c.JSON(
 			statusCode,

@@ -9,14 +9,15 @@ import (
 )
 
 type VideoRequest struct {
-	Title        string   `json:"title"`
-	Description  string   `json:"description"`
-	CategoryID   string   `json:"category_id"`
-	VideoUrl     string   `json:"video_url"`
-	ThumbnailUrl string   `json:"thumbnail_url"`
-	Visibility   string   `json:"visibility"`
-	Tags         []string `json:"tags"`
-	Status       bool     `json:"status"`
+	Title                string   `json:"title"`
+	Description          string   `json:"description"`
+	CategoryID           string   `json:"category_id"`
+	VideoUrl             string   `json:"video_url"`
+	ThumbnailUrl         string   `json:"thumbnail_url"`
+	Visibility           string   `json:"visibility"`
+	Tags                 []string `json:"tags"`
+	Status               bool     `json:"status"`
+	NotificationRedirect string   `json:"notification_redirect"`
 }
 
 func (request VideoRequest) Validate() error {

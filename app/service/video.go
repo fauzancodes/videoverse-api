@@ -55,6 +55,34 @@ func CreateVideo(userID string, request dto.VideoRequest) (response models.VAVid
 		return
 	}
 
+	if request.NotificationRedirect != "" {
+		channels, _, _, _ := repository.GetChannels(dto.FindParameter{
+			Filter:       "deleted_at IS NULL AND user_id = ?",
+			FilterValues: []any{parsedUserUUID},
+		}, []string{})
+
+		if len(channels) > 0 {
+			subscribers, _, _, _ := repository.GetSubscribtions(dto.FindParameter{
+				Filter:       "deleted_at IS NULL AND channel_id = ?",
+				FilterValues: []any{channels[0].ID},
+			}, []string{})
+
+			for _, subscriber := range subscribers {
+				notificationData := dto.NotificationRequest{
+					Redirect: request.NotificationRedirect,
+				}
+
+				notificationData.Content = fmt.Sprintf("%s uploads new video: %s", channels[0].Name, response.Title)
+
+				_, statusCode, err = CreateNotification(subscriber.SubscriberID.String(), notificationData)
+				if err != nil {
+					err = fmt.Errorf("failed to create notification: %s", err.Error())
+					return
+				}
+			}
+		}
+	}
+
 	statusCode = http.StatusCreated
 	return
 }

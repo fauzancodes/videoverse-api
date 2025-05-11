@@ -188,7 +188,7 @@ func DeleteChannel(id string) (statusCode int, err error) {
 	return
 }
 
-func CreateSubscription(userID string, request dto.SubscriptionRequest) (response models.VASubscription, statusCode int, err error) {
+func CreateSubscribtion(userID string, request dto.SubscribtionRequest) (response models.VASubscribtion, statusCode int, err error) {
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
 		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
@@ -202,14 +202,14 @@ func CreateSubscription(userID string, request dto.SubscriptionRequest) (respons
 		return
 	}
 
-	_, err = repository.GetChannelByID(parsedChannelUUID, []string{})
+	channel, err := repository.GetChannelByID(parsedChannelUUID, []string{})
 	if err != nil {
 		err = fmt.Errorf("failed to get channel: %s", err.Error())
 		statusCode = http.StatusBadRequest
 		return
 	}
 
-	checkData, _, _, _ := repository.GetSubscriptions(dto.FindParameter{
+	checkData, _, _, _ := repository.GetSubscribtions(dto.FindParameter{
 		Filter:       "deleted_at IS NULL AND channel_id = ? AND subscriber_id = ?",
 		FilterValues: []any{parsedChannelUUID, parsedUserUUID},
 	}, []string{})
@@ -219,23 +219,52 @@ func CreateSubscription(userID string, request dto.SubscriptionRequest) (respons
 		return
 	}
 
-	data := models.VASubscription{
+	data := models.VASubscribtion{
 		ChannelID:    parsedChannelUUID,
 		SubscriberID: parsedUserUUID,
 	}
 
-	response, err = repository.CreateSubscription(data)
+	response, err = repository.CreateSubscribtion(data)
 	if err != nil {
 		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
 	}
 
+	if request.NotificationRedirect != "" {
+		var user models.VAUser
+		user, err = repository.GetUserByID(parsedUserUUID, []string{"Profile"})
+		if err != nil {
+			err = fmt.Errorf("failed to get user for notification: %s", err.Error())
+			statusCode = http.StatusInternalServerError
+			return
+		}
+
+		notificationData := dto.NotificationRequest{
+			Redirect: request.NotificationRedirect,
+		}
+		userIdentifier := user.Email
+		if user.Profile.Firstname != "" {
+			userIdentifier = user.Profile.Firstname
+		}
+		if user.Profile.Firstname != "" && user.Profile.Lastname != "" {
+			userIdentifier = fmt.Sprintf("%s %s", user.Profile.Firstname, user.Profile.Lastname)
+		}
+
+		notificationData.Content = fmt.Sprintf("%s subscribes to your channel!", userIdentifier)
+
+		_, statusCode, err = CreateNotification(channel.UserID.String(), notificationData)
+		if err != nil {
+			err = fmt.Errorf("failed to create notification: %s", err.Error())
+			return
+		}
+	}
+
 	statusCode = http.StatusCreated
 	return
 }
 
-func GetSubscriptions(channelID, subscriberID string, param utils.PagingRequest, preloadFields []string) (response utils.PagingResponse, data []models.VASubscription, statusCode int, err error) {
+func GetSubscribtions(channelID, subscriberID string, param utils.PagingRequest, preloadFields []string) (response utils.PagingResponse, data []models.VASubscribtion, statusCode int, err error) {
 	baseFilter := "deleted_at IS NULL"
 	filter := baseFilter
 	var filterValues []any
@@ -249,7 +278,7 @@ func GetSubscriptions(channelID, subscriberID string, param utils.PagingRequest,
 		filterValues = append(filterValues, channelID)
 	}
 
-	data, total, totalFiltered, err := repository.GetSubscriptions(dto.FindParameter{
+	data, total, totalFiltered, err := repository.GetSubscribtions(dto.FindParameter{
 		BaseFilter:   baseFilter,
 		Filter:       filter,
 		FilterValues: filterValues,
@@ -274,7 +303,7 @@ func GetSubscriptions(channelID, subscriberID string, param utils.PagingRequest,
 	return
 }
 
-func DeleteSubscription(channelID, userID string) (statusCode int, err error) {
+func DeleteSubscribtion(channelID, userID string, request dto.UnsubscribeRequest) (statusCode int, err error) {
 	parsedUserUUID, err := uuid.Parse(userID)
 	if err != nil {
 		err = fmt.Errorf("failed to parse user UUID: %s", err.Error())
@@ -288,7 +317,7 @@ func DeleteSubscription(channelID, userID string) (statusCode int, err error) {
 		return
 	}
 
-	data, _, _, err := repository.GetSubscriptions(dto.FindParameter{
+	data, _, _, err := repository.GetSubscribtions(dto.FindParameter{
 		Filter:       "deleted_at IS NULL AND channel_id = ? AND subscriber_id = ?",
 		FilterValues: []any{parsedChannelUUID, parsedUserUUID},
 	}, []string{})
@@ -314,11 +343,48 @@ func DeleteSubscription(channelID, userID string) (statusCode int, err error) {
 		return
 	}
 
-	err = repository.DeleteSubscription(data[0])
+	err = repository.DeleteSubscribtion(data[0])
 	if err != nil {
 		err = fmt.Errorf("failed to delete data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
+	}
+
+	if request.NotificationRedirect != "" {
+		var channel models.VAChannel
+		channel, err = repository.GetChannelByID(parsedChannelUUID, []string{})
+		if err != nil {
+			err = fmt.Errorf("failed to get channel for notification: %s", err.Error())
+			statusCode = http.StatusBadRequest
+			return
+		}
+
+		var user models.VAUser
+		user, err = repository.GetUserByID(parsedUserUUID, []string{"Profile"})
+		if err != nil {
+			err = fmt.Errorf("failed to get user for notification: %s", err.Error())
+			statusCode = http.StatusInternalServerError
+			return
+		}
+
+		notificationData := dto.NotificationRequest{
+			Redirect: request.NotificationRedirect,
+		}
+		userIdentifier := user.Email
+		if user.Profile.Firstname != "" {
+			userIdentifier = user.Profile.Firstname
+		}
+		if user.Profile.Firstname != "" && user.Profile.Lastname != "" {
+			userIdentifier = fmt.Sprintf("%s %s", user.Profile.Firstname, user.Profile.Lastname)
+		}
+
+		notificationData.Content = fmt.Sprintf("%s unsubscribes to your channel!", userIdentifier)
+
+		_, statusCode, err = CreateNotification(channel.UserID.String(), notificationData)
+		if err != nil {
+			err = fmt.Errorf("failed to create notification: %s", err.Error())
+			return
+		}
 	}
 
 	statusCode = http.StatusOK

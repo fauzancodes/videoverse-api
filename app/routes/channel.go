@@ -15,11 +15,11 @@ func ChannelRoute(api *gin.RouterGroup) {
 		channels.PATCH("/:id", middlewares.Auth(), controllers.UpdateChannel)
 		channels.DELETE("/:id", middlewares.Auth(), controllers.DeleteChannel)
 
-		subscriptions := channels.Group("/subscriptions")
+		subscribtions := channels.Group("/subscribtions")
 		{
-			subscriptions.POST("", middlewares.Auth(), controllers.CreateSubscription)
-			subscriptions.GET("", controllers.GetSubscriptions)
-			subscriptions.DELETE("/:channel_id", middlewares.Auth(), controllers.DeleteSubscription)
+			subscribtions.POST("", middlewares.Auth(), controllers.CreateSubscribtion)
+			subscribtions.GET("", controllers.GetSubscribtions)
+			subscribtions.DELETE("/:channel_id", middlewares.Auth(), controllers.DeleteSubscribtion)
 		}
 	}
 }

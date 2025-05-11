@@ -28,7 +28,7 @@ func CreateVideoLike(userID string, request dto.VideoLikeRequest) (response mode
 		return
 	}
 
-	_, err = repository.GetVideoByID(parsedVideoUUID, []string{})
+	video, err := repository.GetVideoByID(parsedVideoUUID, []string{})
 	if err != nil {
 		err = fmt.Errorf("failed to get video: %s", err.Error())
 		statusCode = http.StatusBadRequest
@@ -63,6 +63,35 @@ func CreateVideoLike(userID string, request dto.VideoLikeRequest) (response mode
 		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
+	}
+
+	if request.NotificationRedirect != "" {
+		var user models.VAUser
+		user, err = repository.GetUserByID(parsedUserUUID, []string{"Profile"})
+		if err != nil {
+			err = fmt.Errorf("failed to get user for notification: %s", err.Error())
+			statusCode = http.StatusInternalServerError
+			return
+		}
+
+		notificationData := dto.NotificationRequest{
+			Redirect: request.NotificationRedirect,
+		}
+		userIdentifier := user.Email
+		if user.Profile.Firstname != "" {
+			userIdentifier = user.Profile.Firstname
+		}
+		if user.Profile.Firstname != "" && user.Profile.Lastname != "" {
+			userIdentifier = fmt.Sprintf("%s %s", user.Profile.Firstname, user.Profile.Lastname)
+		}
+
+		notificationData.Content = fmt.Sprintf("%s likes your video: %s", userIdentifier, video.Title)
+
+		_, statusCode, err = CreateNotification(video.UserID.String(), notificationData)
+		if err != nil {
+			err = fmt.Errorf("failed to create notification: %s", err.Error())
+			return
+		}
 	}
 
 	statusCode = http.StatusCreated
@@ -173,7 +202,7 @@ func CreateVideoDislike(userID string, request dto.VideoDislikeRequest) (respons
 		return
 	}
 
-	_, err = repository.GetVideoByID(parsedVideoUUID, []string{})
+	video, err := repository.GetVideoByID(parsedVideoUUID, []string{})
 	if err != nil {
 		err = fmt.Errorf("failed to get video: %s", err.Error())
 		statusCode = http.StatusBadRequest
@@ -208,6 +237,35 @@ func CreateVideoDislike(userID string, request dto.VideoDislikeRequest) (respons
 		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
+	}
+
+	if request.NotificationRedirect != "" {
+		var user models.VAUser
+		user, err = repository.GetUserByID(parsedUserUUID, []string{"Profile"})
+		if err != nil {
+			err = fmt.Errorf("failed to get user for notification: %s", err.Error())
+			statusCode = http.StatusInternalServerError
+			return
+		}
+
+		notificationData := dto.NotificationRequest{
+			Redirect: request.NotificationRedirect,
+		}
+		userIdentifier := user.Email
+		if user.Profile.Firstname != "" {
+			userIdentifier = user.Profile.Firstname
+		}
+		if user.Profile.Firstname != "" && user.Profile.Lastname != "" {
+			userIdentifier = fmt.Sprintf("%s %s", user.Profile.Firstname, user.Profile.Lastname)
+		}
+
+		notificationData.Content = fmt.Sprintf("%s dislikes your video: %s", userIdentifier, video.Title)
+
+		_, statusCode, err = CreateNotification(video.UserID.String(), notificationData)
+		if err != nil {
+			err = fmt.Errorf("failed to create notification: %s", err.Error())
+			return
+		}
 	}
 
 	statusCode = http.StatusCreated

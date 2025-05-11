@@ -38,6 +38,13 @@ func CreateComment(userID string, request dto.CommentRequest) (response models.V
 		return
 	}
 
+	video, err := repository.GetVideoByID(parsedVideoUUID, []string{})
+	if err != nil {
+		err = fmt.Errorf("failed to get video: %s", err.Error())
+		statusCode = http.StatusBadRequest
+		return
+	}
+
 	data := models.VAComment{
 		ParentID: parentUUID,
 		UserID:   parsedUserUUID,
@@ -50,6 +57,53 @@ func CreateComment(userID string, request dto.CommentRequest) (response models.V
 		err = fmt.Errorf("failed to create data: %s", err.Error())
 		statusCode = http.StatusInternalServerError
 		return
+	}
+
+	if request.NotificationRedirect != "" {
+		var user models.VAUser
+		user, err = repository.GetUserByID(parsedUserUUID, []string{"Profile"})
+		if err != nil {
+			err = fmt.Errorf("failed to get user for notification: %s", err.Error())
+			statusCode = http.StatusInternalServerError
+			return
+		}
+
+		notificationData := dto.NotificationRequest{
+			Redirect: request.NotificationRedirect,
+		}
+		userIdentifier := user.Email
+		if user.Profile.Firstname != "" {
+			userIdentifier = user.Profile.Firstname
+		}
+		if user.Profile.Firstname != "" && user.Profile.Lastname != "" {
+			userIdentifier = fmt.Sprintf("%s %s", user.Profile.Firstname, user.Profile.Lastname)
+		}
+
+		notificationData.Content = fmt.Sprintf("%s commented on your video: %s", userIdentifier, request.Content)
+
+		_, statusCode, err = CreateNotification(video.UserID.String(), notificationData)
+		if err != nil {
+			err = fmt.Errorf("failed to create notification: %s", err.Error())
+			return
+		}
+
+		if request.ParentID != "" {
+			var parentComment models.VAComment
+			parentComment, err = repository.GetCommentByID(*parentUUID, []string{"Profile"})
+			if err != nil {
+				err = fmt.Errorf("failed to get parent comment for notification: %s", err.Error())
+				statusCode = http.StatusInternalServerError
+				return
+			}
+
+			notificationData.Content = fmt.Sprintf("%s replied to your comment: %s", userIdentifier, request.Content)
+
+			_, statusCode, err = CreateNotification(parentComment.UserID.String(), notificationData)
+			if err != nil {
+				err = fmt.Errorf("failed to create notification: %s", err.Error())
+				return
+			}
+		}
 	}
 
 	statusCode = http.StatusCreated

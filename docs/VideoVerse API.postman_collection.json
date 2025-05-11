@@ -2910,10 +2910,10 @@
 			"name": "Channel",
 			"item": [
 				{
-					"name": "Subscription",
+					"name": "Subscribtion",
 					"item": [
 						{
-							"name": "Create Subscription",
+							"name": "Create Subscribtion",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -2943,21 +2943,21 @@
 									}
 								},
 								"url": {
-									"raw": "{{BASE_URL}}/v1/channels/subscriptions",
+									"raw": "{{BASE_URL}}/v1/channels/subscribtions",
 									"host": [
 										"{{BASE_URL}}"
 									],
 									"path": [
 										"v1",
 										"channels",
-										"subscriptions"
+										"subscribtions"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "Get Subscriptions",
+							"name": "Get Subscribtions",
 							"event": [
 								{
 									"listen": "test",
@@ -3040,20 +3040,20 @@
 									}
 								],
 								"url": {
-									"raw": "{{BASE_URL}}/v1/channels/subscriptions?with_subscriber=true&with_channel=true&subscriber_id=496b5cf8-e8e8-4171-992e-ef9257c83f89&channel_id=fa5ec3c9-9fe4-4dbc-be8e-5a1ae265cd49",
+									"raw": "{{BASE_URL}}/v1/channels/subscribtions?with_subscriber=true&with_channel=true&subscriber_id=496b5cf8-e8e8-4171-992e-ef9257c83f89&channel_id=fa5ec3c9-9fe4-4dbc-be8e-5a1ae265cd49",
 									"host": [
 										"{{BASE_URL}}"
 									],
 									"path": [
 										"v1",
 										"channels",
-										"subscriptions"
+										"subscribtions"
 									],
 									"query": [
 										{
 											"key": "with_subscriber",
 											"value": "true",
-											"description": "Displays the subscription owner user"
+											"description": "Displays the subscribtion owner user"
 										},
 										{
 											"key": "with_channel",
@@ -3097,14 +3097,14 @@
 									}
 								],
 								"url": {
-									"raw": "{{BASE_URL}}/v1/channels/subscriptions/:channel_id",
+									"raw": "{{BASE_URL}}/v1/channels/subscribtions/:channel_id",
 									"host": [
 										"{{BASE_URL}}"
 									],
 									"path": [
 										"v1",
 										"channels",
-										"subscriptions",
+										"subscribtions",
 										":channel_id"
 									],
 									"variable": [

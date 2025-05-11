@@ -9,7 +9,7 @@ type VAChannel struct {
 	Description string           `json:"description" gorm:"type:text;column:description"`
 	Location    string           `json:"location" gorm:"type:text;column:location"`
 	UserID      uuid.UUID        `json:"user_id" gorm:"type:uuid;column:user_id"`
-	Subscribers []VASubscription `json:"subscribers,omitempty" gorm:"foreignKey:ChannelID"`
+	Subscribers []VASubscribtion `json:"subscribers,omitempty" gorm:"foreignKey:ChannelID"`
 	User        *VAUser          `json:"user,omitempty" gorm:"foreignKey:UserID"`
 }
 
@@ -17,7 +17,7 @@ func (VAChannel) TableName() string {
 	return "va_channels"
 }
 
-type VASubscription struct {
+type VASubscribtion struct {
 	CustomGormModel
 	ChannelID    uuid.UUID  `json:"channel_id" gorm:"type:uuid;column:channel_id"`
 	SubscriberID uuid.UUID  `json:"subscriber_id" gorm:"type:uuid;column:subscriber_id"`
@@ -25,6 +25,6 @@ type VASubscription struct {
 	Subscriber   *VAUser    `json:"subscriber,omitempty" gorm:"foreignKey:SubscriberID"`
 }
 
-func (VASubscription) TableName() string {
-	return "va_subscriptions"
+func (VASubscribtion) TableName() string {
+	return "va_subscribtions"
 }

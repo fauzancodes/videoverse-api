@@ -6,7 +6,8 @@ import (
 )
 
 type VideoLikeRequest struct {
-	VideoID string `json:"video_id"`
+	VideoID              string `json:"video_id"`
+	NotificationRedirect string `json:"notification_redirect"`
 }
 
 func (request VideoLikeRequest) Validate() error {
@@ -17,7 +18,8 @@ func (request VideoLikeRequest) Validate() error {
 }
 
 type VideoDislikeRequest struct {
-	VideoID string `json:"video_id"`
+	VideoID              string `json:"video_id"`
+	NotificationRedirect string `json:"notification_redirect"`
 }
 
 func (request VideoDislikeRequest) Validate() error {

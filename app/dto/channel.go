@@ -20,13 +20,18 @@ func (request ChannelRequest) Validate() error {
 	)
 }
 
-type SubscriptionRequest struct {
-	ChannelID string `json:"channel_id"`
+type SubscribtionRequest struct {
+	ChannelID            string `json:"channel_id"`
+	NotificationRedirect string `json:"notification_redirect"`
 }
 
-func (request SubscriptionRequest) Validate() error {
+func (request SubscribtionRequest) Validate() error {
 	return validation.ValidateStruct(
 		&request,
 		validation.Field(&request.ChannelID, validation.Required, is.UUID),
 	)
+}
+
+type UnsubscribeRequest struct {
+	NotificationRedirect string `json:"notification_redirect"`
 }

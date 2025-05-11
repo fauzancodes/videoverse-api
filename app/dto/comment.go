@@ -6,9 +6,10 @@ import (
 )
 
 type CommentRequest struct {
-	ParentID string `json:"parent_id" gorm:"type:uuid;column:parent_id"`
-	VideoID  string `json:"video_id" gorm:"type:uuid;column:video_id"`
-	Content  string `json:"content" gorm:"type:text;column:content"`
+	ParentID             string `json:"parent_id"`
+	VideoID              string `json:"video_id"`
+	Content              string `json:"content"`
+	NotificationRedirect string `json:"notification_redirect"`
 }
 
 func (request CommentRequest) Validate() error {
@@ -21,7 +22,7 @@ func (request CommentRequest) Validate() error {
 }
 
 type CommentUpdateRequest struct {
-	Content string `json:"content" gorm:"type:text;column:content"`
+	Content string `json:"content"`
 }
 
 func (request CommentUpdateRequest) Validate() error {

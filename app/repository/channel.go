@@ -56,13 +56,13 @@ func DeleteChannel(data models.VAChannel) error {
 	return err
 }
 
-func CreateSubscription(data models.VASubscription) (models.VASubscription, error) {
+func CreateSubscribtion(data models.VASubscribtion) (models.VASubscribtion, error) {
 	err := config.DB.Create(&data).Error
 
 	return data, err
 }
 
-func GetSubscriptions(param dto.FindParameter, preloadFields []string) (responses []models.VASubscription, total int64, totalFiltered int64, err error) {
+func GetSubscribtions(param dto.FindParameter, preloadFields []string) (responses []models.VASubscribtion, total int64, totalFiltered int64, err error) {
 	err = config.DB.Model(responses).Where(param.BaseFilter, param.BaseFilterValues...).Count(&total).Error
 	if err != nil {
 		return
@@ -84,7 +84,7 @@ func GetSubscriptions(param dto.FindParameter, preloadFields []string) (response
 	return
 }
 
-func DeleteSubscription(data models.VASubscription) error {
+func DeleteSubscribtion(data models.VASubscribtion) error {
 	err := config.DB.Delete(&data).Error
 
 	return err
