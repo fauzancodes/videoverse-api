@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/fauzancodes/videoverse-api/app/dto"
@@ -25,8 +26,10 @@ func Index(c *gin.Context) {
 }
 
 func DownloadPostmanCollection(c *gin.Context) {
-	buf, statusCode, err := upload.GetRemoteFile("/docs/Sales Demo API.postman_collection.json")
+	fmt.Println("Triggered!")
+	buf, statusCode, err := upload.GetRemoteFile("/docs/VideoVerse API.postman_collection.json")
 	if err != nil {
+		fmt.Println("err:", err.Error())
 		c.JSON(
 			statusCode,
 			dto.Response{
@@ -38,13 +41,13 @@ func DownloadPostmanCollection(c *gin.Context) {
 		return
 	}
 
-	c.Header("Content-Disposition", `attachment; filename="Sales Demo API.postman_collection.json"`)
+	c.Header("Content-Disposition", `attachment; filename="VideoVerse API.postman_collection.json"`)
 	c.Header("Content-Type", "application/octet-stream")
 	c.Data(http.StatusOK, "application/octet-stream", buf.Bytes())
 }
 
 func DownloadPostmanEnvironment(c *gin.Context) {
-	buf, statusCode, err := upload.GetRemoteFile("/docs/Sales Demo API.postman_environment.json")
+	buf, statusCode, err := upload.GetRemoteFile("/docs/VideoVerse API.postman_environment.json")
 	if err != nil {
 		c.JSON(
 			statusCode,
@@ -57,7 +60,7 @@ func DownloadPostmanEnvironment(c *gin.Context) {
 		return
 	}
 
-	c.Header("Content-Disposition", `attachment; filename="Sales Demo API.postman_environment.json"`)
+	c.Header("Content-Disposition", `attachment; filename="VideoVerse API.postman_environment.json"`)
 	c.Header("Content-Type", "application/octet-stream")
 	c.Data(http.StatusOK, "application/octet-stream", buf.Bytes())
 }
