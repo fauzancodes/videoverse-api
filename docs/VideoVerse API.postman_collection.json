@@ -92,7 +92,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"try.cather@gmail.com\",\r\n  \"password\": \"Password@123\"\r\n}",
+							"raw": "{\r\n  \"email\": \"greybyte0222@gmail.com\",\r\n  \"password\": \"Password@123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1358,7 +1358,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"video_id\": \"cf27ff3b-5676-4556-9f0d-bb2b025d7b18\"\r\n}",
+									"raw": "{\r\n    \"video_id\": \"cf27ff3b-5676-4556-9f0d-bb2b025d7b18\",\r\n    \"notification_redirect\": \"/video/:id\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1402,7 +1402,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"video_id\": \"cf27ff3b-5676-4556-9f0d-bb2b025d7b18\"\r\n}",
+									"raw": "{\r\n    \"video_id\": \"cf27ff3b-5676-4556-9f0d-bb2b025d7b18\",\r\n    \"notification_redirect\": \"/video/:id\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1775,7 +1775,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"parent_id\": \"\",\r\n    \"video_id\": \"cf27ff3b-5676-4556-9f0d-bb2b025d7b18\",\r\n    \"content\": \"Nice!\"\r\n}",
+									"raw": "{\r\n    \"parent_id\": \"\",\r\n    \"video_id\": \"cf27ff3b-5676-4556-9f0d-bb2b025d7b18\",\r\n    \"content\": \"Nice!\",\r\n    \"notification_redirect\": \"/video/:id\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2301,7 +2301,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"X Waterfall\",\r\n    \"description\": \"Cras feugiat molestie massa. Nullam viverra sapien purus, vitae condimentum libero pulvinar a. Nam eget fringilla massa. Integer ac feugiat nisi. Nulla semper lorem et finibus cursus. Quisque lobortis neque sem, sit amet efficitur diam tempor in. Aenean sit amet euismod dui. Praesent in ipsum dictum, convallis massa id, fermentum mauris. Donec efficitur eleifend maximus. Vestibulum a dapibus mauris, sit amet commodo nunc.\",\r\n    \"category_id\": \"47e7a6d3-daf1-4678-ba72-ea78c32c7027\",\r\n    \"video_url\": \"https://res.cloudinary.com/dudugnox9/video/upload/v1742978848/videoverse-api/d04060a7-f80d-4041-84cb-b7b110e9645a/qy1yddcffvd0dnojmgtq.mp4\",\r\n    \"thumbnail_url\": \"\",\r\n    \"visibility\": \"private\",\r\n    \"tags\": [\"waterfall\",\"nature\",\"beauty\",\"beautiful\",\"water\"],\r\n    \"status\": true\r\n}",
+							"raw": "{\r\n    \"title\": \"X Waterfall Y\",\r\n    \"description\": \"Cras feugiat molestie massa. Nullam viverra sapien purus, vitae condimentum libero pulvinar a. Nam eget fringilla massa. Integer ac feugiat nisi. Nulla semper lorem et finibus cursus. Quisque lobortis neque sem, sit amet efficitur diam tempor in. Aenean sit amet euismod dui. Praesent in ipsum dictum, convallis massa id, fermentum mauris. Donec efficitur eleifend maximus. Vestibulum a dapibus mauris, sit amet commodo nunc.\",\r\n    \"category_id\": \"47e7a6d3-daf1-4678-ba72-ea78c32c7027\",\r\n    \"video_url\": \"https://res.cloudinary.com/dudugnox9/video/upload/v1742978848/videoverse-api/d04060a7-f80d-4041-84cb-b7b110e9645a/qy1yddcffvd0dnojmgtq.mp4\",\r\n    \"thumbnail_url\": \"\",\r\n    \"visibility\": \"private\",\r\n    \"tags\": [\"waterfall\",\"nature\",\"beauty\",\"beautiful\",\"water\"],\r\n    \"status\": true,\r\n    \"notification_redirect\": \"/video/:id\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2935,7 +2935,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"channel_id\": \"fa5ec3c9-9fe4-4dbc-be8e-5a1ae265cd49\"\r\n}",
+									"raw": "{\r\n    \"channel_id\": \"fa5ec3c9-9fe4-4dbc-be8e-5a1ae265cd49\",\r\n    \"notification_redirect\": \"/channel/subscribers\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3053,7 +3053,7 @@
 										{
 											"key": "with_subscriber",
 											"value": "true",
-											"description": "Displays the subscribtion owner user"
+											"description": "Displays the subscription owner user"
 										},
 										{
 											"key": "with_channel",
@@ -3096,6 +3096,15 @@
 										"type": "text"
 									}
 								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"notification_redirect\": \"/channel/subscribers\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
 								"url": {
 									"raw": "{{BASE_URL}}/v1/channels/subscribtions/:channel_id",
 									"host": [
@@ -3355,6 +3364,180 @@
 									"key": "id",
 									"value": "0286b163-80c7-49a0-8264-818ceffee2d6",
 									"description": "Id of the channel"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "Get Notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/notifications?with_user=true",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "with_user",
+									"value": "true",
+									"description": "Display user who have this notification"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Notification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/notifications/:id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"notifications",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3d27256b-a141-4952-b3a2-6ca8ce40a67a",
+									"description": "Id of the notification"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Notification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/notifications/:id/read",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"notifications",
+								":id",
+								"read"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3d27256b-a141-4952-b3a2-6ca8ce40a67a",
+									"description": "Id of the notification"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unread Notification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/v1/notifications/:id/unread",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"v1",
+								"notifications",
+								":id",
+								"unread"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3d27256b-a141-4952-b3a2-6ca8ce40a67a",
+									"description": "Id of the notification"
 								}
 							]
 						}

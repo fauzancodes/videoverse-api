@@ -86,22 +86,25 @@
         <h1>VideoVerse Documentation</h1>
     </header>
     <main>
-        <p>Welcome to the VideoVerse API documentation. This API is built using the <a href="https://go.dev/" target="_blank">Go</a> programming language with the <a href="https://gin-gonic.com/" target="_blank">Gin</a> framework, leveraging <a href="https://gorm.io/" target="_blank">GORM</a> as the ORM for database connections. <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a> is used as the main database, ensuring high performance and scalability. The API is designed to efficiently and securely support various data management features, including authentication, product management, sales, customers, and other functionalities to meet business needs.</p>
+        <p>Welcome to the documentation of the VideoVerse API. This API is developed using the <a href="https://go.dev/" target="_blank">Go</a> programming language with the <a href="https://gin-gonic.com/" target="_blank">Gin</a> web framework and leverages <a href="https://gorm.io/" target="_blank">GORM</a> for ORM functionalities. It uses <a href="https://www.postgresql.org/" target="">PostgreSQL</a> as its primary database, ensuring fast, reliable, and scalable data handling. Designed to serve as a backend for a video-sharing platform similar to YouTube, this API supports video uploading, user engagement, playlist and channel management, and more.</p>
         <p>Below are the features of the API:</p>
         <ul class="feature-list">
-            <li><strong>Secure Authentication:</strong> Effortlessly manage user access with login, register, email verification and password recovery endpoints, powered by <a href="https://jwt.io/" target="_blank">JWT</a> authentication and industry-standard <a href="https://en.wikipedia.org/wiki/Bcrypt" target="_blank">bcrypt</a> hashing for a secure user experience.</li>
+            <li><strong>Secure Authentication:</strong> Effortlessly manage user access with login, register, email verification, and password recovery endpoints, powered by <a href="https://jwt.io/" target="_blank">JWT</a> authentication and industry-standard <a href="https://en.wikipedia.org/wiki/Bcrypt" target="_blank">bcrypt</a> hashing for a secure user experience.</li>
+            <li><strong>User Account Management:</strong> Users can register, verify their email, log in, view and update their profile, and delete their accounts. Profiles support detailed personal data such as name, gender, date of birth, bio, profile picture, location, and connected social media links.</li>
+            <li><strong>Video Uploading and Management:</strong> Seamlessly upload videos or images, categorize them, and organize them into playlists with visibility options (public, unlisted, private). Videos support metadata such as title, description, and status, and can be edited or removed by the user.</li>
+            <li><strong>User Interactions:</strong> Enhance engagement with features such as likes, dislikes, subscriptions, and comment threads. These interactions are securely tracked and can be updated or removed through authenticated requests.</li>
+            <li><strong>Notification System:</strong> Automatically notify users of key interactions like likes, comments, and subscriptions, with redirect URLs included for optimal frontend user experience.</li>
+            <li><strong>Commenting System:</strong> Post and retrieve both top-level and nested replies, with full support for linking to videos, user profiles, and parent-child comment chains.</li>
             <li><strong>Dynamic Data Retrieval:</strong> All GET endpoints feature dynamic pagination, filtering, searching, and sorting options, making data retrieval intuitive and efficient.</li>
-            <li><strong>Robust Input Validation:</strong> Ensure data integrity with comprehensive validation on all POST endpoints, preventing errors and enhancing user experience.</li>
-            <li><strong>SQL Injection Prevention:</strong> All endpoints is protected with query parameter sanitization, guarding against SQL injection attacks for enhanced security.</li>
-            <li><strong>Secure One-Time API Key:</strong> Each request to the endpoints is protected with a single-use API key generated using <a href="https://en.wikipedia.org/wiki/HMAC" target="_blank">HMAC</a> and <a href="https://en.wikipedia.org/wiki/SHA-2" target="_blank">SHA-256</a> methods, ensuring robust security and integrity for every transaction while safeguarding your data from unauthorized access.</li>
-            <li><strong>Automatic Database Migration:</strong> Enjoy worry-free database management with automatic migration, ensuring your table structures and relationships stay perfectly in sync.</li>
-            <li><strong>Modular And Flexible Architecture Support:</strong> Crafted with modularity in mind, automating deployment, scaling, and management of containerized applications, easily managed through <a href="https://www.docker.com/" target="_blank">Docker</a> and <a href="https://kubernetes.io/" target="_blank">Kubernetes</a> for a streamlined deployment and maintenance experience.</li>
-            <li><strong>Comprehensive Documentation:</strong> Navigate through the API with ease using clear, organized <a href="https://www.postman.com/" target="_blank">Postman</a> documentation designed to simplify testing and ensuring a smooth development experience for all developers.</li>
+            <li><strong>Robust Input Validation:</strong> Ensure data integrity with comprehensive validation on all POST, PUT, and PATCH endpoints, including checks for required fields, UUID formats, string lengths, numerical limits, and valid email or enum values.</li>
+            <li><strong>Secure One-Time API Key:</strong> Each request is protected with a single-use API key generated using <a href="https://en.wikipedia.org/wiki/HMAC" target="_blank">HMAC</a> and <a href="https://en.wikipedia.org/wiki/SHA-2" target="_blank">SHA-256</a> methods, ensuring robust security and integrity for every transaction while safeguarding your data from unauthorized access.</li>
+            <li><strong>SQL Injection Prevention:</strong> All endpoints are protected using parameterized queries via GORM, guarding against SQL injection attacks for enhanced security.</li>
+            <li><strong>Comprehensive Documentation:</strong> Navigate through the API with ease using clear, organized <a href="https://www.postman.com/" target="_blank">Postman</a> documentation designed to simplify testing and ensure a smooth development experience.</li>
         </ul>
         <div class="button-group">
-            <a href="/postman/collection" download="Sale Demo API.postman_collection.json" class="button">Download Postman Collection</a>
-            <a href="/postman/environment" download="Sales Demo API.postman_environment.json" class="button">Download Postman Environment</a>
-            <a href="https://github.com/fauzancodes/sales-demo-api" class="button" target="_blank">Go to GitHub Repository</a>
+            <a href="/postman/collection" download="VideoVerse API.postman_collection.json" class="button">Download Postman Collection</a>
+            <a href="/postman/environment" download="VideoVerse Demo API.postman_environment.json" class="button">Download Postman Environment</a>
+            <a href="https://github.com/fauzancodes/videoverse-api" class="button" target="_blank">Go to GitHub Repository</a>
         </div>
     </main>
     <section class="note">
@@ -116,7 +119,7 @@
         </ul>
     </section>
     <footer>
-        <p>&copy; 2024 VideoVerse API Project. All rights reserved. By <a href="https://fauzancodes.id/" target="_blank">fauzancodes</a></p>
+        <p>&copy; 2025 VideoVerse API Project. All rights reserved. By <a href="https://fauzancodes.id/" target="_blank">fauzancodes</a></p>
     </footer>
 </body>
 </html>
